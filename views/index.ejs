@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>통합 웹 서비스</title>
+
+    <link href="/krds/css/token/krds_tokens.css" rel="stylesheet" />
+    <link href="/krds/css/common/common.css" rel="stylesheet" />
+    <link href="/krds/css/component/component.css" rel="stylesheet" />
+
+    <script defer src="/krds/js/component/ui-script.js"></script>
+</head>
+<body>
+<div id="wrap" class="g-wrap">
+
+    <header id="krds-header">
+        <div class="header-in">
+            <div class="header-container">
+                <div class="inner">
+                    <div class="header-branding">
+                        <div class="header-actions" style="margin-left: auto;">
+                            <% if (user) { %>
+                                <span class="btn-navi my" style="background:none; cursor:default;">
+                                    <strong><%= user.username %></strong>님
+                                </span>
+                                <a href="/logout" class="btn-navi">로그아웃</a>
+                            <% } else { %>
+                                <a href="/login" class="btn-navi login">로그인</a>
+                                <a href="/signup" class="btn-navi join">회원가입</a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="krds-main-menu">
+                <div class="inner">
+                    <ul class="gnb-menu" aria-label="메인 메뉴">
+                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/info'">서비스 안내</button></li>
+                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/board'">게시판</button></li>
+                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/friends'">친구 관리</button></li>
+                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/items'">아이템 관리</button></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div id="container">
+        <div class="contents main">
+            <section class="visual-area">
+                <div class="inner">
+                    <div class="banner" style="padding: 80px 0; text-align: center; background-color: #f4f6f9; border-radius: 16px; margin-top: 40px;">
+                        <h3 class="tit" style="font-size: 2.5rem; margin-bottom: 20px;">모두를 위한 웹 서비스</h3>
+                        <p class="desc" style="font-size: 1.2rem; color: #495057; margin-bottom: 40px;">
+                            누구나 쉽고 편리하게 이용할 수 있는 시스템을 제공합니다.
+                        </p>
+                        <div class="btn-wrap" style="justify-content: center;">
+                            <% if (user) { %>
+                                <a href="/mypage" class="krds-btn xlarge primary">마이페이지 이동</a>
+                            <% } else { %>
+                                <a href="/login" class="krds-btn xlarge primary">시스템 시작하기</a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <footer id="krds-footer" style="margin-top: 80px;">
+        <div class="inner">
+            <div class="f-btm">
+                <div class="f-btm-text">
+                    <div class="f-menu">
+                        <a href="/terms" class="krds-btn small text">이용 안내</a>
+                        <a href="/privacy" class="krds-btn small text">개인정보처리방침</a>
+                        <a href="/copyright" class="krds-btn small text">저작권 정책</a>
+                    </div>
+                    <p class="f-copy">© 2026 Korea National University of Transportation. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</div>
+</body>
+</html>
