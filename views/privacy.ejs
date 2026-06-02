@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>개인정보처리방침 - 중고마켓 동네생활</title>
+
+    <link href="/krds/css/token/krds_tokens.css" rel="stylesheet" />
+    <link href="/krds/css/common/common.css" rel="stylesheet" />
+    <link href="/krds/css/component/component.css" rel="stylesheet" />
+    <script defer src="/krds/js/component/ui-script.js"></script>
+
+    <style>
+        body { background-color: #f4f6f9; } 
+        #krds-footer { background-color: #f4f6f9; margin-top: 60px; padding: 30px 0; border-top: 1px solid #e9ecef; }
+        
+        .btn-logout-fix::before, .btn-logout-fix::after { display: none !important; }
+        .btn-logout-fix { display: inline-flex !important; flex-direction: row !important; align-items: center !important; gap: 4px !important; width: auto !important; white-space: nowrap !important; }
+        .btn-logout-fix svg { display: block !important; margin: 0 !important; }
+        
+        .header-branding { display: flex; align-items: center; width: 100%; }
+        .header-branding .logo, .header-branding .logo a { 
+            background: none !important; 
+            background-image: none !important; 
+            margin: 0; 
+            display: flex; 
+            align-items: center; 
+        }
+
+        .policy-container { max-width: 900px; margin: 60px auto; padding: 50px; background: #ffffff; border: 1px solid #ced4da; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .policy-title { font-size: 2.8rem; font-weight: 700; color: #111; margin-bottom: 40px; text-align: center; border-bottom: 2px solid #222; padding-bottom: 20px; }
+        .policy-content { font-size: 1.5rem; line-height: 1.8; color: #333; word-break: keep-all; }
+        .policy-content p { margin-bottom: 16px; }
+        .policy-content h3 { font-size: 1.8rem; font-weight: 700; color: #000; margin-top: 40px; margin-bottom: 16px; padding-left: 12px; border-left: 4px solid #246beb; }
+        .policy-content .sub-title { font-weight: 700; color: #246beb; margin-top: 16px; display: inline-block; }
+        .policy-content .highlight-box { background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #e9ecef; margin-bottom: 16px; }
+        .policy-content ul { padding-left: 20px; margin-bottom: 16px; list-style-type: disc; }
+        .policy-content li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+<div id="wrap" class="g-wrap">
+
+    <header id="krds-header">
+        <div class="header-in">
+            <div class="header-container">
+                <div class="inner">
+                    <div class="header-branding">
+                        
+                        <h1 class="logo">
+                            <a href="/" style="display: block;">
+                                <img src="/sitelogo.png" alt="사이트 로고" style="height: 45px; width: auto; max-width: 100%; object-fit: contain;">
+                            </a>
+                        </h1>
+
+                        <div class="header-actions" style="margin-left: auto;">
+                            <% if (user) { %>
+                                <span class="btn-navi my" style="background:none; cursor:default;">
+                                    <strong><%= user.username %></strong>님
+                                </span>
+                                
+                                <a href="/logout" class="btn-navi btn-logout-fix" style="text-decoration: none; color: #333;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:-2px;">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                        <polyline points="16 17 21 12 16 7"></polyline>
+                                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                                    </svg>
+                                    <span>로그아웃</span>
+                                </a>
+                            <% } else { %>
+                                <a href="/login" class="btn-navi login">로그인</a>
+                                <a href="/signup" class="btn-navi join">회원가입</a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="krds-main-menu">
+                <div class="inner">
+                    <ul class="gnb-menu" aria-label="메인 메뉴">
+                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/info'">서비스 안내</button></li>
+                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/board'">게시판</button></li>
+                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/friends'">친구 관리</button></li>
+                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/items'">아이템 관리</button></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div id="container">
+        <div class="policy-container">
+            <h2 class="policy-title">개인정보처리방침</h2>
+            
+            <div class="policy-content">
+                <p>중고마켓 동네생활은 “정보통신망 이용촉진 및 정보보호 등에 관한 법률”에 의한 개인정보취급방침을 준수합니다.</p>
+                <p>중고마켓 동네생활(이하 '기관'이라고 함)은 기관에서 제공하는 서비스(이하 ‘서비스’라고 함)를 이용하는 고객(이하 ‘이용자’라고 함)의 개인정보를 매우 소중하게 생각하고 있으며, 이용자의 개인정보를 보호하기 위하여 최선의 노력을 다하고 있습니다.</p>
+                <p>기관은 『정보통신망 이용촉진 및 정보보호 등에 관한 법률』을 비롯한 모든 개인정보보호 관련 법률규정을 준수하고 있으며 기관의 개인정보취급방침을 별도로 제정하고 이를 준수함으로써 이용자의 개인정보를 더욱 보호하고 있습니다.</p>
+                <p>또한 기관은 개인정보취급방침을 항상 기관 홈페이지 첫 화면에 공개함으로써 이용자들이 언제나 쉽게 열람할 수 있도록 조치하고 있습니다. 기관의 개인정보취급방침은 관련 법률 및 고시의 변경 또는 내부 운영방침의 변경에 따라 변경될 수 있습니다. 기관의 개인정보취급방침이 수정될 경우 변경된 사항은 홈페이지를 통하여 공지합니다.</p>
+                <p>기관의 개인정보취급방침은 다음과 같은 내용을 담고 있습니다.</p>
+
+                <h3>1. 개인정보 수집에 대한 동의</h3>
+                <p>기관은 이용자의 개인정보 수집과 관련하여 기관의 개인정보보호정책 또는 이용약관의 내용에 대해 「동의」 또는 「취소」를 선택할 수 있는 절차를 마련하여 이용자가 「동의」 버튼을 클릭하면 개인정보 수집에 대해 동의한 것으로 봅니다.</p>
+
+                <h3>2. 개인정보의 수집항목과 방법</h3>
+                <p>기관은 서비스 제공을 위해 이용자들의 개인정보를 수집하고 있습니다. 기관이 수집하는 개인정보 항목과 그 수집 목적은 아래와 같습니다.</p>
+                <div class="highlight-box">
+                    <span class="sub-title" style="margin-top: 0;">[수집항목]</span><br>
+                    아이디, 비밀번호, 사진, 게시글<br><br>
+                    <span class="sub-title">[수집방법]</span><br>
+                    온라인
+                </div>
+
+                <h3>3. 개인정보의 이용목적</h3>
+                <p>기관은 서비스 이용에 따른 본인 식별 절차에 활용, 이용자의 원활한 서비스 이용을 위하는 등 이용자에게 맞는 최적의 서비스를 제공하기 위한 목적으로 이용자의 개인정보를 수집 이용하고 있습니다.</p>
+                <p>이용자의 사전 동의나 관련 법령의 규정 없이는 어떠한 경우라도 이용자들에게 사전에 밝힌 목적 이외에 다른 목적으로 사용하지 않으며 외부에 공개하지 않습니다.</p>
+
+                <h3>4. 개인정보의 제 3 자에 대한 제공 및 공유</h3>
+                <p>기관은 이용자의 동의가 있거나 관련 법령의 규정에 의한 경우를 제외하고는 어떠한 경우에도 「개인정보의 수집과 이용」,「개인정보의 이용목적」에서 고지한 범위를 넘어 이용자의 개인정보를 이용하거나 제 3 자에게 제공하지 않습니다. 이용자의 개인정보를 제공하거나 공유하는 경우에는 사전에 이용자에게 제공받거나 공유하는 자가 누구이며 주된 사업이 무엇인지, 제공 또는 공유되는 개인정보항목이 무엇인지, 개인정보를 제공하거나 공유하는 목적이 무엇인지 등에 대해 개별적으로 전자우편 또는 홈페이지 공지를 통해 고지한 후 이에 대한 동의를 구합니다. 다만, 아래의 경우는 예외로 합니다.</p>
+                <ul>
+                    <li>통계작성, 학술연구 또는 시장조사를 위하여 필요한 경우로서 특정 개인을 알아볼 수 없는 형태로 가공하여 연구단체, 설문조사, 리서치 기관 등에 제공하는 경우</li>
+                    <li>통신비밀보호법, 국세기본법, 정보통신망 이용촉진 및 정보보호에 관한 법률, 금융 실명거래 및 비밀보장에 관한 법률, 신용정보의 이용 및 보호에 관한 법률, 전기통신기본법, 전기통신사업법, 지방세법, 소비자보호법, 형사소송법 등 특별한 규정이 있는 경우</li>
+                </ul>
+
+                <h3>5. 개인정보의 보유 및 이용기간</h3>
+                <p>기관은 이용자들의 개인정보를 3 년간 보유하며 서비스 제공 등을 위해 이용합니다. 동의를 받은 개인정보의 수집, 이용 목적, 보유 및 이용 기간이 종료된 경우, 지체 없이 파기합니다. 다만 이용자가 자신의 개인정보 삭제를 요청한 경우, 이용자의 개인정보는 재생할 수 없는 방법에 의하여 디스크에서 완전히 삭제하며 출력된 경우에는 분쇄기로 분쇄하는 방법으로 추후 열람이나 이용이 불가능한 상태로 처리됩니다.</p>
+                <p>이용자가 개인정보에 대한 동의 철회를 요청하더라도 상법, 전자상거래 등에서의 소비자 보호에 관한 법률, 국세기본법 등 법령의 규정에 의하여 보존할 필요성이 있는 경우에는 다음과 같이 일정기간 이용자의 개인정보를 보유할 수 있습니다.</p>
+                <div class="highlight-box">
+                    <ul>
+                        <li>계약 또는 청약철회 등에 관한 기록 : 5 년</li>
+                        <li>대금결제 및 재화 등의 공급에 관한 기록 : 5 년</li>
+                        <li>소비자 불만 또는 분쟁 처리에 관한 기록 : 3 년</li>
+                    </ul>
+                </div>
+                <p>전산에 등록된 개인정보는 개인정보관리 담당자 및 책임자 또는 이들의 승인을 얻은 자가 아니면 문서로 출력할 수 없습니다.</p>
+
+                <h3>6. 개인정보관리 담당자 및 개인정보관리 책임자</h3>
+                <p>기관은 이용자의 개인정보를 보호하고 개인정보와 관련한 불만을 처리하기 위하여 아래와 같이 개인정보관리 담당자 및 개인정보관리 책임자를 두고 있습니다.</p>
+                <div class="highlight-box">
+                    <span class="sub-title" style="margin-top: 0;">[개인정보관리 담당자]</span><br>
+                    - 이름 : 중고마켓 동네생활 담당자<br>
+                    - 소속/직책 : 중고마켓 동네생활 담당자<br>
+                    - 이메일 : knutfinal@gmail.com<br><br>
+                    
+                    <span class="sub-title">[개인정보관리 책임자]</span><br>
+                    - 이름 : 중고마켓 동네생활 담당자<br>
+                    - 소속/직책 : 중고마켓 동네생활 담당자<br>
+                    - 이메일 : knutfinal@gmail.com
+                </div>
+
+                <h3>7. 쿠키에 의한 개인정보</h3>
+                <p>수집기관은 이용자에 대한 정보를 저장하고 수시로 찾아내는 ‘쿠키(cookie)’ 정보를 사용하지 않습니다.</p>
+
+                <h3>8. 개인정보의 열람 정정</h3>
+                <p>이용자는 언제든지 개인정보관리 담당자 및 책임자를 통하여 자신의 개인정보를 조회하거나 이용자의 개인정보에 오류가 있는 경우 수정할 수 있으며 삭제를 요청할 수도 있습니다. 이용자의 개인정보에 대한 조회 또는 정정을 요구하고자 할 경우에는 개인정보관리 담당자 및 책임자에게 서면 또는 E-mail로 연락하시면 지체없이 조치를 즉시 취하도록 하겠습니다.</p>
+
+                <h3>9. 개인정보 수집 이용 제공에 대한 동의 철회</h3>
+                <p>이용자는 개인정보의 수집 이용 및 제공에 대해 동의하신 내용을 언제든지 철회할 수 있습니다. 개인정보관리 담당자 및 책임자에게 서면 또는 E-mail 등으로 동의 철회를 할 수 있습니다. 기관의 개인정보관리 담당자 및 책임자는 연락을 받는 즉시 이용자의 개인정보를 파기 하는 등 필요한 조치를 하겠습니다. 기관은 동의철회 및 개인정보 파기 등의 조치를 취한 경우에는 그 사실을 이용자께 지체없이 통지하며, 개인정보의 수집에 대한 동의철회를 개인정보를 수집하는 방법보다 쉽게 할 수 있도록 필요한 조치를 하겠습니다. 만 14 세 미만 아동의 경우, 법정대리인이 아동의 개인정보를 조회하거나 수정할 권리, 수집 및 이용 동의를 철회할 권리를 가집니다.</p>
+
+                <h3>10. 개인정보 관리</h3>
+                <span class="sub-title">[기술적 대책]</span>
+                <p>기관은 이용자의 개인정보를 취급함에 있어 개인정보가 분실, 도난, 누출, 변조 또는 훼손되지 않도록 안전성 확보를 위하여 기술적 대책을 강구하고 있습니다. 고객의 개인정보는 외부망에서 접근 및 침입이 불가능한 내부망을 활용하여 관리되고 있으며, 파일 및 전송데이터를 암호화하거나 파일잠금기능(lock)을 사용하여 중요한 데이터는 별도의 보안 기능을 통해 철저하게 보호되고 있습니다.</p>
+                <span class="sub-title">[관리적 대책]</span>
+                <p>기관은 이용자의 개인정보에 대한 접근권한을 최소한의 인원으로 제한하고 개인정보의 안전성을 확보하기 위하여 개인정보에 대한 접근 및 관리에 필요한 내부절차를 마련하고 소속 직원으로 하여금 이를 숙지하고 준수하도록 하고 있습니다.</p>
+
+                <h3>11. 개인정보 침해관련 상담 및 신고</h3>
+                <p>기관은 이용자의 의견을 소중하게 생각하며, 이용자의 의문사항으로부터 언제나 성실한 답변을 받을 권리가 있습니다. 기관의 서비스를 이용하시며 발생하는 모든 개인정보보호 관련 민원을 기관 대표 이메일 또는 개인정보관리 담당자 및 책임자에게 신고할 수 있습니다.</p>
+
+                <h3>12. 보호정책 변경 시 공지의무</h3>
+                <p>현 개인정보 보호정책의 내용 추가, 삭제 및 수정이 있을 시에는 개정 최소 7 일전부터 홈페이지의 공지사항을 본 페이지에 게시하며 변경 사항이 중대할 경우에는 일부 서비스에서 개인정보 취급방침과 관련한 변경 고지 이메일을 발송하는 등 적극적으로 알립니다.</p>
+
+                <div style="margin-top: 40px; text-align: right; font-weight: bold;">
+                    <p>[부칙] (시행일)</p>
+                    <p>이 약관은 2026 년 6 월 2 일부터 시행합니다.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer id="krds-footer">
+        <div class="inner">
+            <div class="f-btm">
+                <div class="f-btm-text">
+                    <div class="f-menu">
+                        <a href="/terms" class="krds-btn small text">이용 안내</a>
+                        <a href="/privacy" class="krds-btn small text">개인정보처리방침</a>
+                        <a href="/copyright" class="krds-btn small text">저작권 정책</a>
+                    </div>
+                    <p class="f-copy">© 2026 Korea National University of Transportation. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</div>
+</body>
+</html>

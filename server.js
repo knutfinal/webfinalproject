@@ -21,6 +21,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use('/krds', express.static('node_modules/krds-uiux/resources'));
 app.use('/krds/img/img', express.static('node_modules/krds-uiux/resources/img'));
+const path = require('path');
+app.get('/sitelogo.png', (req, res) => {
+    res.sendFile(path.join(__dirname, 'node_modules', 'sitelogo.png'));
+});
 
 app.use(session({
     secret: 'KNUThorray260601', // 세션을 암호화할 키
@@ -40,7 +44,7 @@ app.get('/', (req, res) => {
 
 // 회원가입 화면(signup.ejs)을 보여주는 라우터
 app.get('/signup', (req, res) => {
-    res.render('signup');
+    res.render('signup', { user: req.session.user });
 });
 
 // 유저가 입력한 데이터를 받아서 DB에 저장하는 라우터
@@ -70,7 +74,7 @@ app.post('/signup', async (req, res) => {
 
 // 로그인 화면(login.ejs)을 보여주는 라우터
 app.get('/login', (req, res) => {
-    res.render('login');
+    res.render('login', { user: req.session.user });
 });
 
 // 유저가 입력한 아이디/비밀번호를 검증하는 라우터
@@ -113,27 +117,25 @@ app.get('/logout', (req, res) => {
     });
 });
 
-// 빈 페이지 임시생성
-const dummyPage = (req, res) => {
-    res.send(`
-        <div style="text-align: center; margin-top: 100px; font-family: sans-serif;">
-            <h2>페이지 준비 중입니다.</h2>
-            <p>이 기능은 추후 업데이트될 예정입니다.</p>
-            <br>
-            <a href="/" style="padding: 10px 20px; background: #004ea2; color: white; text-decoration: none; border-radius: 5px;">메인으로 돌아가기</a>
-        </div>
-    `);
-};
+// 개별 서브 페이지
+app.get('/info', (req, res) => res.render('info', { user: req.session.user }));
+app.get('/board', (req, res) => res.render('board', { user: req.session.user }));
+app.get('/friends', (req, res) => res.render('friends', { user: req.session.user }));
+app.get('/items', (req, res) => res.render('items', { user: req.session.user }));
 
-app.get('/info', dummyPage);      // 서비스 안내
-app.get('/board', dummyPage);     // 게시판
-app.get('/friends', dummyPage);   // 친구 관리
-app.get('/items', dummyPage);     // 아이템 관리
-app.get('/mypage', dummyPage);    // 마이페이지
-app.get('/terms', dummyPage);     // 이용 안내
-app.get('/privacy', dummyPage);   // 개인정보처리방침
-app.get('/copyright', dummyPage); // 저작권 정책
+// 마이페이지는 로그인이 안 되어 있으면 로그인 창으로 튕겨냅니다.
+app.get('/mypage', (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+    res.render('mypage', { user: req.session.user });
+});
 
+app.get('/terms', (req, res) => res.render('terms', { user: req.session.user }));
+app.get('/privacy', (req, res) => res.render('privacy', { user: req.session.user }));
+app.get('/copyright', (req, res) => res.render('copyright', { user: req.session.user }));
+
+// 서버 구동
 app.listen(PORT, () => {
     console.log(`서버 가동, 주소 : http://localhost:${PORT}`);
 });
