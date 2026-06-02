@@ -10,6 +10,24 @@
     <link href="/krds/css/component/component.css" rel="stylesheet" />
 
     <script defer src="/krds/js/component/ui-script.js"></script>
+
+    <style>
+        .btn-logout-fix::before, .btn-logout-fix::after {
+            display: none !important;
+        }
+        .btn-logout-fix {
+            display: inline-flex !important;
+            flex-direction: row !important; /* 무조건 가로로 나열 */
+            align-items: center !important; /* 수직 중앙 정렬 */
+            gap: 4px !important; /* 아이콘과 글자 사이 간격 */
+            width: auto !important; /* 버튼이 좁아서 줄이 바뀌는 현상 방지 */
+            white-space: nowrap !important; /* 텍스트 줄바꿈 원천 차단 */
+        }
+        .btn-logout-fix img {
+            display: block !important;
+            margin: 0 !important;
+        }
+    </style>
 </head>
 <body>
 <div id="wrap" class="g-wrap">
@@ -24,9 +42,10 @@
                                 <span class="btn-navi my" style="background:none; cursor:default;">
                                     <strong><%= user.username %></strong>님
                                 </span>
-                                <a href="/logout" class="btn-navi" style="display: inline-flex; align-items: center; gap: 4px;">
+                                
+                                <a href="/logout" class="btn-navi btn-logout-fix">
                                     <img src="/krds/img/component/icon/ico_logout.svg" alt="로그아웃 아이콘" style="width: 20px; height: 20px;">
-                                    로그아웃
+                                    <span>로그아웃</span>
                                 </a>
                             <% } else { %>
                                 <a href="/login" class="btn-navi login">로그인</a>
