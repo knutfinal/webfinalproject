@@ -23,7 +23,7 @@ app.use('/krds', express.static('node_modules/krds-uiux/resources'));
 app.use('/krds/img/img', express.static('node_modules/krds-uiux/resources/img'));
 const path = require('path');
 app.get('/sitelogo.png', (req, res) => {
-    res.sendFile(path.join(__dirname, 'node_modules', 'sitelogo.png'));
+    res.sendFile(path.join(__dirname, 'public', 'sitelogo.png'));
 });
 
 app.use(session({
