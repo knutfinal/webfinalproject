@@ -24,7 +24,10 @@
                                 <span class="btn-navi my" style="background:none; cursor:default;">
                                     <strong><%= user.username %></strong>님
                                 </span>
-                                <a href="/logout" class="btn-navi">로그아웃</a>
+                                <a href="/logout" class="btn-navi" style="display: inline-flex; align-items: center; gap: 4px;">
+                                    <img src="/krds/img/component/icon/ico_logout.svg" alt="로그아웃 아이콘" style="width: 20px; height: 20px;">
+                                    로그아웃
+                                </a>
                             <% } else { %>
                                 <a href="/login" class="btn-navi login">로그인</a>
                                 <a href="/signup" class="btn-navi join">회원가입</a>
