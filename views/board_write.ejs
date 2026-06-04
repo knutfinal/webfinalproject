@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>판매 물품 정보 - 중고마켓 동네생활</title>
+    <title>동네 소식 쓰기 - 중고마켓 동네생활</title>
 
     <link href="/krds/css/token/krds_tokens.css" rel="stylesheet" />
     <link href="/krds/css/common/common.css" rel="stylesheet" />
@@ -21,26 +21,36 @@
         .header-branding { display: flex; align-items: center; width: 100%; }
         .header-branding .logo, .header-branding .logo a { background: none !important; background-image: none !important; margin: 0; display: flex; align-items: center; }
 
-        .subpage-container { max-width: 1200px; margin: 60px auto; padding: 0 20px; min-height: 50vh; }
-        .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; border-bottom: 2px solid #222; padding-bottom: 16px; }
-        .page-title { font-size: 2.8rem; font-weight: 700; color: #111; margin: 0; }
+        .subpage-container { max-width: 1000px; margin: 60px auto; padding: 0 20px; min-height: 50vh; }
         
-        .btn-write { background-color: #246beb; color: #fff; border: none; padding: 10px 24px; font-size: 1.6rem; font-weight: bold; border-radius: 6px; text-decoration: none; transition: 0.2s; }
-        .btn-write:hover { background-color: #1d56bc; }
-        .btn-manage { background-color: #495057; color: #fff; border: none; padding: 10px 24px; font-size: 1.6rem; font-weight: bold; border-radius: 6px; text-decoration: none; transition: 0.2s; }
-        .btn-manage:hover { background-color: #343a40; }
+        .subTit h3 { font-size: 2.8rem; font-weight: 700; color: #111; margin-bottom: 20px; }
 
-        .item-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
-        .item-card { background: #fff; border-radius: 12px; border: 1px solid #ced4da; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: transform 0.2s; cursor: pointer; text-decoration: none; color: inherit; display: block; }
-        .item-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); border-color: #246beb; }
+        .cl_type { width: 100%; }
+        .default_order { display: flex; justify-content: space-between; background: #f8f9fa; border: 1px solid #ced4da; border-radius: 8px; margin-bottom: 40px; overflow: hidden; }
+        .order_item { flex: 1; text-align: center; padding: 20px 0; font-size: 1.6rem; color: #868e96; font-weight: 500; position: relative; }
+        .order_item.on { background: #246beb; color: #fff; font-weight: 700; }
+        .order_item em { font-style: normal; display: block; font-size: 1.3rem; margin-bottom: 5px; opacity: 0.8; }
+        .order_item:not(:last-child)::after { content: ''; position: absolute; right: 0; top: 20%; height: 60%; width: 1px; background: #ced4da; }
+        .order_item.on::after { display: none; }
+
+        .mw_Input { border-top: 2px solid #222; }
+        .mwInput_box { padding: 30px 20px; border-bottom: 1px solid #e9ecef; }
+        .mwInput_box .mwTit { display: block; font-size: 1.8rem; font-weight: 700; color: #333; margin-bottom: 15px; }
+        .red { color: #e03131; margin-left: 5px; }
+        .hide { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
         
-        .item-img-placeholder { height: 200px; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; color: #adb5bd; font-size: 1.4rem; border-bottom: 1px solid #ced4da; }
-        .item-info { padding: 20px; }
-        .item-info h4 { font-size: 1.8rem; font-weight: 600; color: #333; margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .item-info .price { font-size: 1.8rem; font-weight: 800; color: #111; margin-bottom: 10px; }
-        .item-info .seller { font-size: 1.3rem; color: #868e96; display: flex; justify-content: space-between; }
+        .mwI_full { width: 100%; padding: 12px 15px; font-size: 1.6rem; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; outline: none; transition: border-color 0.2s; }
+        .mwI_full:focus, .ta_box textarea:focus { border-color: #246beb; }
         
-        .my-items-section { margin-top: 80px; padding-top: 50px; border-top: 2px dashed #ced4da; }
+        .ta_box { position: relative; }
+        .ta_box textarea { width: 100%; min-height: 300px; padding: 15px; font-size: 1.6rem; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; outline: none; resize: vertical; line-height: 1.6; }
+
+        .btnAreaLR { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; padding-top: 20px; }
+        .btnAreaLR .btn { padding: 14px 40px; font-size: 1.6rem; font-weight: bold; border-radius: 4px; text-decoration: none; display: inline-block; cursor: pointer; text-align: center; border: none; }
+        .btnAreaLR .btn.gray { background: #f1f3f5; color: #495057; border: 1px solid #ced4da; transition: 0.2s; }
+        .btnAreaLR .btn.gray:hover { background: #e9ecef; }
+        .btnAreaLR .btn.fill { background: #246beb; color: #fff; transition: 0.2s; }
+        .btnAreaLR .btn.fill:hover { background: #1d56bc; }
         .krds-main-menu .gnb-menu > li > .gnb-main-trigger::after {
     display: none !important;
 }
@@ -97,59 +107,54 @@
 
     <div id="container" class="subpage-container">
         
-        <!-- 전체 판매 물품 영역 -->
-        <div class="page-header">
-            <h2 class="page-title">동네 판매 물품 (전체)</h2>
-            <a href="/items/write" class="btn-write">판매글 등록하기</a>
-        </div>
-        
-<div class="item-grid">
-            <% items.forEach(function(item) { %>
-            <a href="#" class="item-card">
-                <% if (item.image) { %>
-                    <img src="<%= item.image %>" class="item-img" alt="물품 이미지">
-                <% } else { %>
-                    <div class="item-img-placeholder">이미지 없음</div>
-                <% } %>
-                <div class="item-info">
-                    <h4><%= item.title %></h4>
-                    <p class="price"><%= item.price.toLocaleString() %>원</p>
-                    <div class="seller"><span>판매자: <%= item.author %></span><span><%= item.createdAt.toLocaleDateString() %></span></div>
+        <div id="div_frmDsgnType" class="cl_type">
+            <div class="default_order">
+                <div class="order_item icon_1 on">
+                    <span title="현재 작성 단계"><em>1단계</em> 게시글 작성</span>
+                    <span class="hide">현단계 진행 중 입니다.</span>
                 </div>
-            </a>
-            <% }) %>
-            <% if(items.length === 0) { %><p>아직 등록된 물품이 없습니다.</p><% } %>
-        </div>
-
-        <% if (user) { %>
-        <div class="my-items-section">
-            <div class="page-header">
-                <h2 class="page-title">내가 등록한 물품</h2>
-                <a href="/items/manage" class="btn-manage">내 물품 관리</a>
+                <div class="order_item icon_3">
+                    <span id="span_step3" title="작성완료 단계"><em>2단계</em> 작성완료</span>
+                </div>
             </div>
-            
-            <div class="item-grid">
-                <% myItems.forEach(function(item) { %>
-                <a href="/items/manage" class="item-card">
-                    <% if (item.image) { %>
-                        <img src="<%= item.image %>" class="item-img" alt="물품 이미지">
-                    <% } else { %>
-                        <div class="item-img-placeholder">이미지 없음</div>
-                    <% } %>
-                    <div class="item-info">
-                        <h4><%= item.title %></h4>
-                        <p class="price"><%= item.price.toLocaleString() %>원</p>
-                        <div class="seller">
-                            <span style="color: #246beb; font-weight: bold;">판매자: <%= item.author %> (나)</span>
-                            <span><%= item.createdAt.toLocaleDateString() %></span>
+
+            <form action="/board/write" method="POST" id="frm">
+                <div class="mw_Input">
+                    
+                    <div class="mwInput_box">
+                        <strong class="mwTit">
+                            <label for="title">게시글 제목<span class="red">*<i class="hide">필수입력</i></span></label>
+                        </strong>
+                        <input title="게시글제목" type="text" name="title" id="title" class="mwI_full" placeholder="동네 이웃들과 나누고 싶은 소식의 제목을 적어주세요." required>
+                    </div>
+                    
+                    <div class="mwInput_box">
+                        <strong class="mwTit">
+                            <label for="content">게시글 내용<span class="red">*<i class="hide">필수입력</i></span></label>
+                        </strong>
+                        <div class="ta_box">
+                            <textarea name="content" id="content" rows="10" title="게시글내용" placeholder="자세한 소식을 작성해주세요." required></textarea>
                         </div>
                     </div>
-                </a>
-                <% }) %>
-                <% if(myItems.length === 0) { %><p>등록한 물품이 없습니다.</p><% } %>
-            </div>
+                    
+                </div>
+                
+                <div class="btnAreaLR" id="divButtonArea">
+                    <div class="btnA_l">
+                        <a href="/board" class="btn gray">
+                            <span class="hide">현재 작성을 취소합니다.</span>
+                            취소
+                        </a>
+                    </div>
+                    <div class="btnA_r">
+                        <button type="submit" class="btn fill" id="submitBtn">
+                            <span class="hide">게시글을 등록합니다.</span>
+                            작성
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
-        <% } %>
 
     </div>
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>동네 소식 (게시판) - 중고마켓 동네생활</title>
+    <title>동네 소식 - 중고마켓 동네생활</title>
 
     <link href="/krds/css/token/krds_tokens.css" rel="stylesheet" />
     <link href="/krds/css/common/common.css" rel="stylesheet" />
@@ -12,7 +12,7 @@
 
     <style>
         body { background-color: #ffffff; } 
-        #krds-footer { background-color: #f4f6f9; margin-top: 60px; padding: 30px 0; border-top: 1px solid #e9ecef; }
+        #krds-footer { background-color: #f4f6f9; margin-top: 80px; padding: 30px 0; border-top: 1px solid #e9ecef; }
         
         .btn-logout-fix::before, .btn-logout-fix::after { display: none !important; }
         .btn-logout-fix { display: inline-flex !important; flex-direction: row !important; align-items: center !important; gap: 4px !important; width: auto !important; white-space: nowrap !important; }
@@ -21,9 +21,53 @@
         .header-branding { display: flex; align-items: center; width: 100%; }
         .header-branding .logo, .header-branding .logo a { background: none !important; background-image: none !important; margin: 0; display: flex; align-items: center; }
 
-        .subpage-container { max-width: 1200px; margin: 60px auto; padding: 0 20px; min-height: 40vh; }
-        .page-title { font-size: 2.8rem; font-weight: 700; color: #111; margin-bottom: 24px; border-bottom: 2px solid #222; padding-bottom: 16px; }
-        .dummy-box { background: #ffffff; border: 1px dashed #ced4da; border-radius: 12px; padding: 80px 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .subpage-container { max-width: 1200px; margin: 60px auto; padding: 0 20px; min-height: 50vh; }
+        .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; border-bottom: 2px solid #222; padding-bottom: 16px; }
+        .page-title { font-size: 2.8rem; font-weight: 700; color: #111; margin: 0; }
+
+        /* 💡 검색 영역 스타일 (유지) */
+        .prog_search { background: #f8f9fa; border: 1px solid #e9ecef; padding: 30px; border-radius: 8px; margin-bottom: 30px; }
+        .bSch_row { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .bSch_row:last-child { margin-bottom: 0; }
+        .bSch_col { display: flex; align-items: center; gap: 15px; flex: 1; }
+        .bSch_col .label { font-size: 1.6rem; font-weight: bold; color: #333; min-width: 80px; }
+        .sch_def { display: flex; gap: 10px; width: 100%; }
+        .sch_def select, .sch_def input { padding: 10px 15px; font-size: 1.5rem; border: 1px solid #ced4da; border-radius: 4px; outline: none; }
+        .sch_def select { width: 150px; }
+        .sch_def input { flex: 1; }
+        .bSch_btn { text-align: center; margin-top: 20px; }
+        .btn-search { background: #495057; color: #fff; padding: 10px 40px; font-size: 1.6rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer; transition: 0.2s; }
+
+        /* ======================================================== */
+        /* 💡 예시 사이트와 완전히 동일한 글 목록 리스트 전용 CSS */
+        /* ======================================================== */
+        .prog_util { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .prog_util .total { font-size: 1.4rem; color: #333; }
+        .prog_util .total span { color: #d32f2f; font-weight: bold; }
+        .prog_util .align select { padding: 4px 8px; border: 1px solid #ccc; font-size: 1.3rem; outline: none; }
+        
+        .tbl.default { width: 100%; border-top: 2px solid #222; border-bottom: 1px solid #ccc; border-collapse: collapse; text-align: center; }
+        .tbl.default caption { display: none; } /* 접근성 숨김 처리용 */
+        .tbl.default th { padding: 12px 10px; background: #f8f9fa; border-bottom: 1px solid #ccc; font-weight: bold; font-size: 1.4rem; color: #333; }
+        .tbl.default td { padding: 12px 10px; border-bottom: 1px solid #e9ecef; font-size: 1.4rem; color: #555; }
+        .tbl.default td.left { text-align: left; }
+        .tbl.default td a { color: #333; text-decoration: none; }
+        .tbl.default td a:hover { text-decoration: underline; }
+        .hide, .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+        .page_list { display: flex; justify-content: center; align-items: center; margin-top: 30px; margin-bottom: 40px; gap: 4px; }
+        .page_list a, .page_list strong { display: inline-flex; justify-content: center; align-items: center; min-width: 32px; height: 32px; border: 1px solid #ccc; font-size: 1.4rem; text-decoration: none; color: #555; background: #fff; }
+        .page_list strong.ds_number { background: #495057; color: #fff; border-color: #495057; font-weight: bold; }
+        .page_list span.paging_count { margin: 0 10px; font-size: 1.3rem; color: #666; }
+        .page_list span.nep_p_prevBundle a, .page_list span.nep_p_prev a, .page_list span.nep_p_next a, .page_list span.nep_p_nextBundle a { background: #f8f9fa; color: #333; font-weight: bold; }
+        /* ======================================================== */
+
+        .btnAreaLR { display: flex; justify-content: flex-end; }
+        .btn-write { background-color: #246beb; color: #fff; border: none; padding: 10px 24px; font-size: 1.5rem; font-weight: bold; border-radius: 4px; text-decoration: none; transition: 0.2s; }
+        .btn-write:hover { background-color: #1d56bc; }
+        .krds-main-menu .gnb-menu > li > .gnb-main-trigger::after {
+    display: none !important;
+}
     </style>
 </head>
 <body>
@@ -45,7 +89,6 @@
                                 <span class="btn-navi my" style="background:none; cursor:default;">
                                     <strong><%= user.username %></strong>님
                                 </span>
-                                
                                 <a href="/logout" class="btn-navi btn-logout-fix" style="text-decoration: none; color: #333;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:-2px;">
                                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -77,13 +120,121 @@
     </header>
 
     <div id="container" class="subpage-container">
-        <h2 class="page-title">동네 소식 (게시판)</h2>
         
-        <div class="dummy-box">
-            <h3 style="font-size: 2rem; margin-bottom: 12px; color: #333;">🛠️ 화면 준비 중입니다</h3>
-            <p style="font-size: 1.2rem; color: #666; margin-bottom: 24px;">해당 기능은 추후 업데이트를 통해 제공될 예정입니다.</p>
-            <a href="/" class="krds-btn medium primary">메인으로 돌아가기</a>
+        <div class="page-header">
+            <h2 class="page-title">동네 소식</h2>
         </div>
+
+        <div class="prog_search">
+            <div class="boardSch">
+                <form action="/board" method="GET">
+                    <div class="bSch_row">
+                        <div class="bSch_col full">
+                            <div class="label"><label for="searchType">검색어</label></div>
+                            <div class="sch_def">
+                                <select name="searchType" id="searchType">
+                                    <option value="all" <%= typeof searchType !== 'undefined' && searchType === 'all' ? 'selected' : '' %>>전체</option>
+                                    <option value="titl" <%= typeof searchType !== 'undefined' && searchType === 'titl' ? 'selected' : '' %>>제목</option>
+                                    <option value="writer" <%= typeof searchType !== 'undefined' && searchType === 'writer' ? 'selected' : '' %>>작성자</option>
+                                </select>
+                                <input type="text" name="searchWord" id="searchWord" placeholder="검색어를 입력해주세요." value="<%= typeof searchWord !== 'undefined' ? searchWord : '' %>">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bSch_btn">
+                        <button type="submit" class="btn-search">검색</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="prog_util">
+            <span class="total" aria-live="polite">총 <span><%= totalCount %></span>건 등록 (<%= page %>/<%= totalPages %>)</span>
+            <div class="align">
+                <label for="listCnt" class="hide">글목록 개수 지정</label>
+                <select id="listCnt" onchange="location.href='/board?searchType=<%=searchType%>&searchWord=<%=searchWord%>&limit=' + this.value;">
+                    <option value="10" <%= limit == 10 ? 'selected' : '' %>>10개씩</option>
+                    <option value="20" <%= limit == 20 ? 'selected' : '' %>>20개씩</option>
+                    <option value="30" <%= limit == 30 ? 'selected' : '' %>>30개씩</option>
+                    <option value="40" <%= limit == 40 ? 'selected' : '' %>>40개씩</option>
+                    <option value="50" <%= limit == 50 ? 'selected' : '' %>>50개씩</option>
+                </select>
+            </div>
+        </div>
+
+        <table class="tbl default brd5">
+            <caption>
+                <strong>동네 소식 목록</strong>
+            </caption>
+            <colgroup>
+                <col style="width:80px">
+                <col style="width:auto">
+                <col style="width:120px">
+                <col style="width:120px">
+                <col style="width:100px">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th scope="col">번호</th>
+                    <th scope="col">제목</th>
+                    <th scope="col">작성자</th>
+                    <th scope="col">등록일</th>
+                    <th scope="col">조회수</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (typeof boards !== 'undefined' && boards.length > 0) { %>
+                    <% boards.forEach(function(board, index) { %>
+                    <tr>
+                        <td data-label="번호"><%= totalCount - ((page - 1) * limit) - index %></td>
+                        <td class="left" data-label="제목">
+                            <a href="/board/<%= board._id %>"><%= board.title %></a>
+                        </td>
+                        <td data-label="작성자"><%= board.author %></td>
+                        <td data-label="등록일"><%= board.createdAt.toLocaleDateString() %></td>
+                        <td data-label="조회수"><%= board.views %></td>
+                    </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="5" style="padding: 60px 0; color: #888; font-size: 1.5rem;">
+                            검색 결과가 없거나 아직 작성된 소식이 없습니다.
+                        </td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+        
+        <%
+            // 하단에 페이지 번호를 5개씩 묶어서 보여주기 위한 계산식
+            let startPage = Math.floor((page - 1) / 5) * 5 + 1;
+            let endPage = startPage + 4;
+            if (endPage > totalPages) endPage = totalPages;
+            
+            // 검색어 유지를 위한 URL 파라미터 미리 묶기
+            let urlParams = `&limit=${limit}&searchType=${searchType}&searchWord=${searchWord}`;
+        %>
+        <div class="page_list">
+            <span class="nep_p_prevBundle"><a href="/board?page=1<%= urlParams %>" title="처음 페이지로 이동">&laquo;</a></span>
+            <span class="nep_p_prev"><a href="/board?page=<%= page > 1 ? page - 1 : 1 %><%= urlParams %>" title="이전 페이지로 이동">&lt;</a></span>
+            
+            <% for(let i = startPage; i <= endPage; i++) { %>
+                <% if(i == page) { %>
+                    <strong class="ds_number"><a><%= i %></a></strong>
+                <% } else { %>
+                    <a href="/board?page=<%= i %><%= urlParams %>" class="ds_number"><%= i %></a>
+                <% } %>
+            <% } %>
+
+            <span class="paging_count"><%= page %>/<%= totalPages %></span>
+
+            <span class="nep_p_next"><a href="/board?page=<%= page < totalPages ? page + 1 : totalPages %><%= urlParams %>" title="다음 페이지로 이동">&gt;</a></span>
+            <span class="nep_p_nextBundle"><a href="/board?page=<%= totalPages %><%= urlParams %>" title="마지막 페이지로 이동">&raquo;</a></span>
+        </div>
+        <div class="btnAreaLR">
+            <a href="/board/write" class="btn-write">글쓰기</a>
+        </div>
+
     </div>
 
     <footer id="krds-footer">

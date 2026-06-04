@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>회원가입 - 중고마켓 동네생활</title>
+    <title><%= board.title %> - 중고마켓 동네생활</title>
 
     <link href="/krds/css/token/krds_tokens.css" rel="stylesheet" />
     <link href="/krds/css/common/common.css" rel="stylesheet" />
@@ -12,37 +12,41 @@
 
     <style>
         body { background-color: #ffffff; } 
-        #krds-footer { background-color: #f4f6f9; margin-top: 40px; padding: 30px 0; border-top: 1px solid #e9ecef; }
+        #krds-footer { background-color: #f4f6f9; margin-top: 80px; padding: 30px 0; border-top: 1px solid #e9ecef; }
         
-        .auth-inner { width: 100%; max-width: 124.8rem; margin: 0 auto; padding: 6.4rem 1.6rem; }
-        .auth-inner.type-short { max-width: 600px; padding: 0 2.4rem; margin-top: 60px; margin-bottom: 60px; }
-        .page-title-wrap { display: flex; flex-direction: column; margin-bottom: 4rem; text-align: center; }
-        .page-title-wrap .h-tit { font-size: 3.2rem; font-weight: 700; color: #111; margin-bottom: 1.5rem; }
-        .page-title-wrap .h-txt { font-size: 1.7rem; color: #555; line-height: 1.5; }
-        .login-wrap { border: 1px solid #d8d8d8; border-radius: 1.2rem; padding: 4rem; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .form-group { margin-bottom: 2.4rem; }
-        .form-tit { margin-bottom: 1.2rem; font-size: 1.7rem; font-weight: 700; color: #1d1d1d; text-align: left; }
-        .form-control { width: 100%; height: 5.6rem; padding: 0 1.6rem; border-radius: 0.8rem; border: 1px solid #c6c6c6; font-size: 1.7rem; box-sizing: border-box; }
-        .form-control:focus { border-color: #246beb; outline: none; }
-        .btn.primary { background-color: #246beb; color: #fff; border: none; width: 100%; height: 5.6rem; border-radius: 0.8rem; font-size: 1.9rem; font-weight: 700; cursor: pointer; margin-top: 1rem; }
-        .btn.primary:hover { background-color: #1d56bc; }
-        .link-group { display: flex; justify-content: center; gap: 2rem; margin-top: 2rem; list-style: none; padding: 0; }
-        .link-group a { color: #555; font-size: 1.6rem; text-decoration: none; }
-        .link-group a:hover { text-decoration: underline; color: #246beb; }
-
         .btn-logout-fix::before, .btn-logout-fix::after { display: none !important; }
         .btn-logout-fix { display: inline-flex !important; flex-direction: row !important; align-items: center !important; gap: 4px !important; width: auto !important; white-space: nowrap !important; }
         .btn-logout-fix svg { display: block !important; margin: 0 !important; }
         
         .header-branding { display: flex; align-items: center; width: 100%; }
-        .header-branding .logo, .header-branding .logo a { 
-            background: none !important; 
-            background-image: none !important; 
-            margin: 0; 
-            display: flex; 
-            align-items: center; 
-        }
-        .krds-main-menu .gnb-menu > li > .gnb-main-trigger::after { display: none !important; }
+        .header-branding .logo, .header-branding .logo a { background: none !important; background-image: none !important; margin: 0; display: flex; align-items: center; }
+
+        .subpage-container { max-width: 1000px; margin: 60px auto; padding: 0 20px; min-height: 50vh; }
+
+        .cl_type { width: 100%; }
+        .default_order { display: flex; justify-content: space-between; background: #f8f9fa; border: 1px solid #ced4da; border-radius: 8px; margin-bottom: 40px; overflow: hidden; }
+        .order_item { flex: 1; text-align: center; padding: 20px 0; font-size: 1.6rem; color: #868e96; font-weight: 500; position: relative; }
+        .order_item.on { background: #246beb; color: #fff; font-weight: 700; }
+        .order_item em { font-style: normal; display: inline-block; font-size: 1.4rem; margin-right: 5px; opacity: 0.8; }
+        .order_item:not(:last-child)::after { content: ''; position: absolute; right: 0; top: 20%; height: 60%; width: 1px; background: #ced4da; }
+        .order_item.on::after { display: none; }
+
+        .titBox { margin-bottom: 15px; }
+        .titBox h4 { font-size: 2.2rem; font-weight: 700; color: #111; }
+
+        .answerWrap { border-top: 2px solid #222; margin-bottom: 40px; }
+        .h_InputType dl { display: flex; border-bottom: 1px solid #e9ecef; margin: 0; }
+        .h_InputType dt { width: 150px; background: #f8f9fa; padding: 18px 20px; font-weight: 700; color: #333; font-size: 1.5rem; display: flex; align-items: center; border-right: 1px solid #e9ecef; }
+        .h_InputType dd { flex: 1; padding: 18px 20px; font-size: 1.5rem; color: #495057; display: flex; align-items: center; }
+        .h_InputType dd p { white-space: pre-wrap; line-height: 1.7; word-break: break-all; margin: 0; font-size: 1.6rem; color: #222; }
+
+        .btnAreaLR { display: flex; justify-content: flex-end; align-items: center; margin-top: 30px; }
+        .btnAreaLR .btn { padding: 14px 40px; font-size: 1.6rem; font-weight: bold; border-radius: 4px; text-decoration: none; display: inline-block; cursor: pointer; text-align: center; border: none; }
+        .btnAreaLR .btn.fill { background: #246beb; color: #fff; transition: 0.2s; }
+        .btnAreaLR .btn.fill:hover { background: #1d56bc; }
+        .krds-main-menu .gnb-menu > li > .gnb-main-trigger::after {
+    display: none !important;
+}
     </style>
 </head>
 <body>
@@ -53,7 +57,6 @@
             <div class="header-container">
                 <div class="inner">
                     <div class="header-branding">
-                        
                         <h1 class="logo">
                             <a href="/" style="display: block;">
                                 <img src="/sitelogo.png" alt="사이트 로고" style="height: 45px; width: auto; max-width: 100%; object-fit: contain;">
@@ -65,7 +68,6 @@
                                 <span class="btn-navi my" style="background:none; cursor:default;">
                                     <strong><%= user.username %></strong>님
                                 </span>
-                                
                                 <a href="/logout" class="btn-navi btn-logout-fix" style="text-decoration: none; color: #333;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:-2px;">
                                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -96,46 +98,59 @@
         </div>
     </header>
 
-    <div id="container">
-        <div class="auth-inner type-short">
-            <div class="page-title-wrap">
-                <h2 class="h-tit">회원가입</h2>
-                <p class="h-txt">서비스 이용을 위해<br>신규 계정을 등록해 주십시오.</p>
+    <div id="container" class="subpage-container">
+        
+        <div id="div_frmDsgnType" class="cl_type">
+            <div class="default_order col_2">
+                <div class="order_item icon_1">
+                    <span><em>1단계</em> 게시글 작성</span>
+                </div>
+                <div class="order_item icon_3 on">
+                    <span><em>2단계</em> 작성 완료</span>
+                </div>
             </div>
-            
-            <div class="conts-area login-type">
-                <div class="login-form-area">
-                    <div class="login-wrap">
-                        <div class="in">
-                            <form id="frm" name="frm" action="/signup" method="POST">
-                                <div class="form-group">
-                                    <div class="form-tit"><label for="username">사용할 아이디</label></div>
-                                    <div class="form-conts">
-                                        <input type="text" name="username" id="username" class="form-control" placeholder="아이디를 입력하세요." required>
-                                    </div>
-                                </div>
-                                <div class="form-group" style="margin-bottom: 4rem;">
-                                    <div class="form-tit"><label for="password">사용할 비밀번호</label></div>
-                                    <div class="form-conts">
-                                        <input type="password" name="password" id="password" class="form-control" placeholder="비밀번호를 입력하세요." required>
-                                    </div>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <button type="submit" class="btn primary">가입 완료</button>
-                                </div>
-                                <div class="form-group">
-                                    <ul class="link-group">
-                                        <li><a href="/">메인으로 가기</a></li>
-                                        <li><a href="/login">이미 계정이 있으신가요? 로그인</a></li>
-                                    </ul>
-                                </div>
-                            </form>
-                        </div>
+
+            <div class="titBox type_1 icon icon_1">
+                <h4>게시글 내용</h4>
+            </div>
+    
+            <div class="answerWrap">
+                <div class="answerBox">
+                    <div class="h_InputType">
+                        <dl>
+                            <dt>제목</dt>
+                            <dd><strong><%= board.title %></strong></dd>
+                        </dl>
+                        <dl>
+                            <dt>작성자</dt>
+                            <dd><%= board.author %></dd>
+                        </dl>
+                        <dl>
+                            <dt>작성일시</dt>
+                            <dd><%= board.createdAt.toLocaleString() %></dd>
+                        </dl>
+                        <dl>
+                            <dt>조회수</dt>
+                            <dd><%= board.views %></dd>
+                        </dl>
+                        <dl>
+                            <dt style="align-items: flex-start; padding-top: 20px;">내용</dt>
+                            <dd style="align-items: flex-start; padding-top: 20px; padding-bottom: 20px;">
+                                <p><%= board.content %></p>
+                            </dd>
+                        </dl>
                     </div>
                 </div>
             </div>
+            
+            <div class="btnAreaLR">
+                <div class="btnA_r">
+                    <a href="/board" class="btn fill">목록</a>
+                </div>
+            </div>
+
         </div>
+
     </div>
 
     <footer id="krds-footer">

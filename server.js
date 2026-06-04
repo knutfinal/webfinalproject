@@ -18,6 +18,7 @@ const PORT = process.env.PORT || 3000;
 
 const Item = require('./models/Item');
 const Friend = require('./models/Friend');
+const Board = require('./models/Board');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
@@ -227,7 +228,96 @@ app.post('/items/delete/:id', async (req, res) => {
 });
 
 app.get('/info', (req, res) => res.render('info', { user: req.session.user }));
-app.get('/board', (req, res) => res.render('board', { user: req.session.user }));
+
+// 게시판 목록 보기
+app.get('/board', async (req, res) => {
+    try {
+        const searchType = req.query.searchType || 'all';
+        const searchWord = req.query.searchWord || '';
+        
+        // 페이징 변수 설정 (주소창에서 값을 받아오고, 없으면 기본값 세팅)
+        const page = parseInt(req.query.page) || 1;      // 현재 페이지 (기본 1페이지)
+        const limit = parseInt(req.query.limit) || 10;   // 한 페이지당 볼 글의 개수 (기본 10개)
+
+        let searchQuery = {}; 
+
+        if (searchWord.trim() !== '') {
+            const keyword = searchWord.trim();
+            if (searchType === 'titl') {
+                searchQuery.title = { $regex: keyword, $options: 'i' };
+            } else if (searchType === 'writer') {
+                searchQuery.author = { $regex: keyword, $options: 'i' };
+            } else {
+                searchQuery.$or = [
+                    { title: { $regex: keyword, $options: 'i' } },
+                    { author: { $regex: keyword, $options: 'i' } },
+                    { content: { $regex: keyword, $options: 'i' } }
+                ];
+            }
+        }
+
+        // 조건에 맞는 전체 게시글 수 계산
+        const totalCount = await Board.countDocuments(searchQuery);
+        
+        // 총 페이지 수 계산 
+        const totalPages = Math.ceil(totalCount / limit) || 1;
+        
+        // 건너뛸 글의 개수 계산 
+        const skip = (page - 1) * limit;
+
+        // DB에서 글을 가져올 때 건너뛰기(skip)와 자르기(limit) 적용
+        const boards = await Board.find(searchQuery)
+                                  .sort({ createdAt: -1 })
+                                  .skip(skip)
+                                  .limit(limit);
+        
+        res.render('board', { 
+            user: req.session.user, 
+            boards: boards,
+            searchType: searchType,
+            searchWord: searchWord,
+            page: page,               // 현재 페이지 번호
+            limit: limit,             // 현재 보기 개수
+            totalCount: totalCount,   // 총 게시글 수
+            totalPages: totalPages    // 총 페이지 수
+        });
+    } catch (err) { 
+        console.error(err);
+        res.send("오류가 발생했습니다."); 
+    }
+});
+
+// 글쓰기 화면 띄우기
+app.get('/board/write', (req, res) => {
+    if (!req.session.user) return res.send(`<script>alert("로그인이 필요합니다."); window.location.href="/login";</script>`);
+    res.render('board_write', { user: req.session.user });
+});
+
+// 글쓰기 DB 저장 (POST)
+app.post('/board/write', async (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
+    try {
+        const newBoard = new Board({
+            title: req.body.title,
+            content: req.body.content,
+            author: req.session.user.username
+        });
+        await newBoard.save();
+        res.redirect('/board');
+    } catch (err) { res.send("오류가 발생했습니다."); }
+});
+
+// 글 상세 보기
+app.get('/board/:id', async (req, res) => {
+    try {
+        const board = await Board.findById(req.params.id);
+        if (board) {
+            board.views += 1; // 💡 상세페이지를 열 때마다 조회수 1 증가
+            await board.save();
+        }
+        res.render('board_detail', { user: req.session.user, board: board });
+    } catch (err) { res.send("오류가 발생했습니다."); }
+});
 
 // 친구 관리 페이지 띄우기 (GET)
 app.get('/friends', async (req, res) => {

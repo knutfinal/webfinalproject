@@ -11,11 +11,9 @@
     <script defer src="/krds/js/component/ui-script.js"></script>
 
     <style>
-        /* 기본 배경색 흰색 고정 */
         body { background-color: #ffffff; } 
         #krds-footer { background-color: #f4f6f9; margin-top: 80px; padding: 30px 0; border-top: 1px solid #e9ecef; }
         
-        /* 통합 헤더 스타일 */
         .btn-logout-fix::before, .btn-logout-fix::after { display: none !important; }
         .btn-logout-fix { display: inline-flex !important; flex-direction: row !important; align-items: center !important; gap: 4px !important; width: auto !important; white-space: nowrap !important; }
         .btn-logout-fix svg { display: block !important; margin: 0 !important; }
@@ -23,15 +21,12 @@
         .header-branding { display: flex; align-items: center; width: 100%; }
         .header-branding .logo, .header-branding .logo a { background: none !important; background-image: none !important; margin: 0; display: flex; align-items: center; }
 
-        /* 💡 서비스 안내(info) 전용 UI 스타일 */
         .info-container { max-width: 1000px; margin: 60px auto; padding: 0 20px; }
         
-        /* 1. 상단 히어로(Hero) 영역 */
         .info-hero { text-align: center; padding: 60px 0; margin-bottom: 40px; }
         .info-hero h2 { font-size: 3.2rem; font-weight: 800; color: #111; margin-bottom: 20px; line-height: 1.4; }
         .info-hero p { font-size: 1.8rem; color: #555; line-height: 1.6; }
 
-        /* 2. 특징 설명 카드 영역 */
         .info-features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin-bottom: 60px; }
         .feature-card { background: #f8f9fa; padding: 40px 30px; border-radius: 16px; text-align: center; border: 1px solid #e9ecef; transition: transform 0.3s ease; }
         .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
@@ -39,16 +34,17 @@
         .feature-tit { font-size: 2rem; font-weight: 700; color: #222; margin-bottom: 16px; }
         .feature-desc { font-size: 1.5rem; color: #666; line-height: 1.6; word-break: keep-all; }
 
-        /* 3. 커뮤니티 텍스트 강조 영역 */
         .info-community { background: #e7f5ff; padding: 60px 40px; border-radius: 16px; text-align: center; margin-bottom: 80px; }
         .info-community h3 { font-size: 2.4rem; font-weight: 700; color: #1864ab; margin-bottom: 20px; }
         .info-community p { font-size: 1.6rem; color: #333; line-height: 1.7; word-break: keep-all; }
 
-        /* 4. 하단 CTA(Call To Action) 영역 */
         .info-cta { text-align: center; padding: 40px 0 60px 0; border-top: 1px dashed #ced4da; }
         .info-cta h3 { font-size: 2.6rem; font-weight: 700; color: #111; margin-bottom: 30px; }
         .btn-write-post { display: inline-block; background-color: #246beb; color: #fff; font-size: 2rem; font-weight: 700; padding: 16px 48px; border-radius: 50px; text-decoration: none; transition: 0.2s; box-shadow: 0 4px 12px rgba(36, 107, 235, 0.3); }
         .btn-write-post:hover { background-color: #1d56bc; transform: scale(1.05); }
+        .krds-main-menu .gnb-menu > li > .gnb-main-trigger::after {
+    display: none !important;
+}
     </style>
 </head>
 <body>
