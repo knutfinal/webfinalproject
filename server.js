@@ -220,6 +220,10 @@ app.post('/items/delete/:id', async (req, res) => {
     }
 });
 
+app.get('/info', (req, res) => res.render('info', { user: req.session.user }));
+app.get('/board', (req, res) => res.render('board', { user: req.session.user }));
+app.get('/friends', (req, res) => res.render('friends', { user: req.session.user }));
+
 // 마이페이지는 로그인이 안 되어 있으면 로그인 창으로 튕겨냄
 app.get('/mypage', async (req, res) => {
     if (!req.session.user) {
