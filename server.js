@@ -319,6 +319,27 @@ app.get('/board/:id', async (req, res) => {
     } catch (err) { res.send("오류가 발생했습니다."); }
 });
 
+// 댓글 작성 처리 (POST)
+app.post('/board/:id/comment', async (req, res) => {
+    if (!req.session.user) return res.send(`<script>alert("로그인이 필요합니다."); window.location.href="/login";</script>`);
+    try {
+        const board = await Board.findById(req.params.id);
+        if (!board) return res.send(`<script>alert("존재하지 않는 게시글입니다."); window.history.back();</script>`);
+
+        // 게시글의 comments 배열에 새 댓글 밀어넣기
+        board.comments.push({
+            content: req.body.commentContent,
+            author: req.session.user.username
+        });
+
+        await board.save(); // DB 저장
+        res.redirect(`/board/${req.params.id}`); // 댓글 작성 후 원래 게시글로 돌아가기
+    } catch (err) {
+        console.error(err);
+        res.send(`<script>alert("댓글 작성 중 오류가 발생했습니다."); window.history.back();</script>`);
+    }
+});
+
 // 친구 관리 페이지 띄우기 (GET)
 app.get('/friends', async (req, res) => {
     if (!req.session.user) return res.send(`<script>alert("로그인이 필요합니다."); window.location.href="/login";</script>`);
