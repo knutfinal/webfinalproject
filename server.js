@@ -44,37 +44,30 @@ app.get('/', (req, res) => {
 
 // 회원가입 화면(signup.ejs)을 보여주는 라우터
 app.get('/signup', (req, res) => {
-    res.render('signup', { user: req.session.user });
+    res.render('signup', { user: req.session.user, errorMessage: null });
 });
 
 // 유저가 입력한 데이터를 받아서 DB에 저장하는 라우터
 app.post('/signup', async (req, res) => {
     try {
-        // 유저가 입력한 아이디와 비밀번호 가져옴
         const { username, password } = req.body;
-
-        // 비밀번호를 암호화
         const hashedPassword = await bcrypt.hash(password, 10);
-
-        // 설계도를 바탕으로 새 유저 데이터 생성
-        const newUser = new User({
-            username: username,
-            password: hashedPassword
-        });
-
-        // 몽고DB에 저장!!
+        const newUser = new User({ username: username, password: hashedPassword });
+        
         await newUser.save();
 
-        res.send('<h1>가입 성공! DB에 저장되었습니다.</h1>');
+        // 성공하면 로그인 페이지로 보내면서 모달 메시지 띄움
+        res.render('login', { user: null, errorMessage: "가입 성공! 환영합니다.<br>로그인을 진행해주세요." });
     } catch (error) {
         console.log(error);
-        res.send('<h1>가입 실패 (이미 존재하는 아이디일 수 있습니다.)</h1>');
+        // 실패하면 회원가입 페이지를 유지하며 모달 띄움
+        res.render('signup', { user: null, errorMessage: "가입 실패: 이미 존재하는 아이디이거나 오류가 발생했습니다." });
     }
 });
 
 // 로그인 화면(login.ejs)을 보여주는 라우터
 app.get('/login', (req, res) => {
-    res.render('login', { user: req.session.user });
+    res.render('login', { user: req.session.user, errorMessage: null });
 });
 
 // 유저가 입력한 아이디/비밀번호를 검증하는 라우터
@@ -82,30 +75,29 @@ app.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
 
-        // 데이터베이스에서 해당 아이디를 가진 유저가 있는지 확인
         const user = await User.findOne({ username: username });
         if (!user) {
-            return res.send('<h1>로그인 실패: 아이디를 찾을 수 없습니다.</h1>');
+            // 아이디 없을 때 화면 유지하며 모달 메시지 전달
+            return res.render('login', { user: null, errorMessage: "로그인을 실패했습니다.<br>아이디를 찾을 수 없습니다." });
         }
 
-        // 입력한 비밀번호와 DB에 암호화된 비밀번호가 일치하는지 비교
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.send('<h1>로그인 실패: 비밀번호가 틀렸습니다.</h1>');
+            // 비밀번호 틀렸을 때 화면 유지하며 모달 메시지 전달
+            return res.render('login', { user: null, errorMessage: "로그인을 실패했습니다.<br>아이디 비밀번호를 확인해 주세요." });
         }
 
-        // 일치하면 세션에 유저 고유 ID와 이름을 기록 (로그인 처리)
         req.session.user = {
             id: user._id,
             username: user.username
         };
 
-        // 로그인이 완료되면 홈 화면('/')으로 강제 이동(리다이렉트)
-        res.redirect('/');
+        // 로그인 완료시 마이페이지 이동
+        res.redirect('/mypage');
 
     } catch (error) {
         console.log(error);
-        res.send('<h1>로그인 중 서버 오류가 발생했습니다.</h1>');
+        res.render('login', { user: null, errorMessage: "서버 오류가 발생했습니다.<br>잠시 후 다시 시도해주세요." });
     }
 });
 
@@ -117,13 +109,65 @@ app.get('/logout', (req, res) => {
     });
 });
 
+app.get('/items', (req, res) => res.render('items', { user: req.session.user }));
+
+// 판매글 작성 페이지 (로그인한 사람만 접근 가능)
+app.get('/items/write', (req, res) => {
+    if (!req.session.user) {
+        return res.send(`<script>alert("로그인이 필요한 서비스입니다."); window.location.href="/login";</script>`);
+    }
+    res.render('items_write', { user: req.session.user });
+});
+
 // 개별 서브 페이지
 app.get('/info', (req, res) => res.render('info', { user: req.session.user }));
 app.get('/board', (req, res) => res.render('board', { user: req.session.user }));
 app.get('/friends', (req, res) => res.render('friends', { user: req.session.user }));
 app.get('/items', (req, res) => res.render('items', { user: req.session.user }));
 
-// 마이페이지는 로그인이 안 되어 있으면 로그인 창으로 튕겨냅니다.
+// 판매글 작성 폼 (GET)
+app.get('/items/write', (req, res) => {
+    if (!req.session.user) {
+        return res.send(`<script>alert("로그인이 필요한 서비스입니다."); window.location.href="/login";</script>`);
+    }
+    res.render('items_write', { user: req.session.user });
+});
+
+// 작성된 판매글 처리 (POST)
+app.post('/items/write', (req, res) => {
+    // 임시로 DB 연동 전이므로 성공 팝업만 띄우고 판매 물품 정보 페이지로 이동
+    res.send(`<script>alert("판매글이 성공적으로 등록되었습니다!"); window.location.href="/items";</script>`);
+});
+
+// 내 판매 물품 관리 페이지 (GET)
+app.get('/items/manage', (req, res) => {
+    if (!req.session.user) {
+        return res.send(`<script>alert("로그인이 필요한 서비스입니다."); window.location.href="/login";</script>`);
+    }
+    res.render('items_manage', { user: req.session.user });
+});
+
+// 판매글 수정 페이지 띄우기 (GET)
+app.get('/items/edit', (req, res) => {
+    if (!req.session.user) {
+        return res.send(`<script>alert("로그인이 필요한 서비스입니다."); window.location.href="/login";</script>`);
+    }
+    res.render('items_edit', { user: req.session.user });
+});
+
+// 판매글 수정 데이터 처리 (POST)
+app.post('/items/edit', (req, res) => {
+    // 임시 / 나중에 이곳에 DB 업데이트 코드가 들어감
+    res.send(`<script>alert("판매글이 성공적으로 수정되었습니다!"); window.location.href="/items/manage";</script>`);
+});
+
+// 판매글 삭제 처리 (POST)
+app.post('/items/delete', (req, res) => {
+    // 임시 / 나중에 이곳에 DB 삭제 코드가 들어갑
+    res.send(`<script>alert("판매글이 삭제되었습니다."); window.location.href="/items/manage";</script>`);
+});
+
+// 마이페이지는 로그인이 안 되어 있으면 로그인 창으로 튕겨냄
 app.get('/mypage', (req, res) => {
     if (!req.session.user) {
         return res.redirect('/login');

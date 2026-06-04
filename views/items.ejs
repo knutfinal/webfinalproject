@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ｉｔｅｍｓ - 중고마켓 동네생활</title>
+    <title>판매 물품 정보 - 중고마켓 동네생활</title>
 
     <link href="/krds/css/token/krds_tokens.css" rel="stylesheet" />
     <link href="/krds/css/common/common.css" rel="stylesheet" />
@@ -11,8 +11,8 @@
     <script defer src="/krds/js/component/ui-script.js"></script>
 
     <style>
-        body { background-color: #f4f6f9; } 
-        #krds-footer { background-color: #f4f6f9; margin-top: 60px; padding: 30px 0; border-top: 1px solid #e9ecef; }
+        body { background-color: #ffffff; } 
+        #krds-footer { background-color: #f4f6f9; margin-top: 80px; padding: 30px 0; border-top: 1px solid #e9ecef; }
         
         .btn-logout-fix::before, .btn-logout-fix::after { display: none !important; }
         .btn-logout-fix { display: inline-flex !important; flex-direction: row !important; align-items: center !important; gap: 4px !important; width: auto !important; white-space: nowrap !important; }
@@ -21,9 +21,27 @@
         .header-branding { display: flex; align-items: center; width: 100%; }
         .header-branding .logo, .header-branding .logo a { background: none !important; background-image: none !important; margin: 0; display: flex; align-items: center; }
 
-        .subpage-container { max-width: 1200px; margin: 60px auto; padding: 0 20px; min-height: 40vh; }
-        .page-title { font-size: 2.8rem; font-weight: 700; color: #111; margin-bottom: 24px; border-bottom: 2px solid #222; padding-bottom: 16px; }
-        .dummy-box { background: #ffffff; border: 1px dashed #ced4da; border-radius: 12px; padding: 80px 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .subpage-container { max-width: 1200px; margin: 60px auto; padding: 0 20px; min-height: 50vh; }
+        .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; border-bottom: 2px solid #222; padding-bottom: 16px; }
+        .page-title { font-size: 2.8rem; font-weight: 700; color: #111; margin: 0; }
+        
+        .btn-write { background-color: #246beb; color: #fff; border: none; padding: 10px 24px; font-size: 1.6rem; font-weight: bold; border-radius: 6px; text-decoration: none; transition: 0.2s; }
+        .btn-write:hover { background-color: #1d56bc; }
+        .btn-manage { background-color: #495057; color: #fff; border: none; padding: 10px 24px; font-size: 1.6rem; font-weight: bold; border-radius: 6px; text-decoration: none; transition: 0.2s; }
+        .btn-manage:hover { background-color: #343a40; }
+
+        .item-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+        .item-card { background: #fff; border-radius: 12px; border: 1px solid #ced4da; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: transform 0.2s; cursor: pointer; text-decoration: none; color: inherit; display: block; }
+        .item-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); border-color: #246beb; }
+        
+        .item-img-placeholder { height: 200px; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; color: #adb5bd; font-size: 1.4rem; border-bottom: 1px solid #ced4da; }
+        .item-info { padding: 20px; }
+        .item-info h4 { font-size: 1.8rem; font-weight: 600; color: #333; margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .item-info .price { font-size: 1.8rem; font-weight: 800; color: #111; margin-bottom: 10px; }
+        .item-info .seller { font-size: 1.3rem; color: #868e96; display: flex; justify-content: space-between; }
+        
+        /* 내가 등록한 물품 섹션 구분선 */
+        .my-items-section { margin-top: 80px; padding-top: 50px; border-top: 2px dashed #ced4da; }
     </style>
 </head>
 <body>
@@ -45,7 +63,6 @@
                                 <span class="btn-navi my" style="background:none; cursor:default;">
                                     <strong><%= user.username %></strong>님
                                 </span>
-                                
                                 <a href="/logout" class="btn-navi btn-logout-fix" style="text-decoration: none; color: #333;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:-2px;">
                                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -69,7 +86,7 @@
                         <li><button type="button" class="gnb-main-trigger" onclick="location.href='/info'">서비스 안내</button></li>
                         <li><button type="button" class="gnb-main-trigger" onclick="location.href='/board'">게시판</button></li>
                         <li><button type="button" class="gnb-main-trigger" onclick="location.href='/friends'">친구 관리</button></li>
-                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/items'">아이템 관리</button></li>
+                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/items'">판매 물품 정보</button></li>
                     </ul>
                 </div>
             </nav>
@@ -77,13 +94,58 @@
     </header>
 
     <div id="container" class="subpage-container">
-        <h2 class="page-title">ｉｔｅｍｓ</h2>
         
-        <div class="dummy-box">
-            <h3 style="font-size: 2rem; margin-bottom: 12px; color: #333;">화면 준비 중입니다</h3>
-            <p style="font-size: 1.2rem; color: #666; margin-bottom: 24px;">해당 기능은 추후 업데이트를 통해 제공될 예정입니다.</p>
-            <a href="/" class="krds-btn medium primary">메인으로 돌아가기</a>
+        <!-- 전체 판매 물품 영역 -->
+        <div class="page-header">
+            <h2 class="page-title">동네 판매 물품 (전체)</h2>
+            <a href="/items/write" class="btn-write">판매글 등록하기 ✏️</a>
         </div>
+        
+        <div class="item-grid">
+            <!-- 다른 사람들이 올린 물품 (임시) -->
+            <a href="#" class="item-card">
+                <div class="item-img-placeholder">이미지 없음</div>
+                <div class="item-info">
+                    <h4>가죽 자전거 안장 팝니다</h4>
+                    <p class="price">35,000원</p>
+                    <div class="seller"><span>판매자: 김동네</span><span>방금 전</span></div>
+                </div>
+            </a>
+            <a href="#" class="item-card">
+                <div class="item-img-placeholder">이미지 없음</div>
+                <div class="item-info">
+                    <h4>거의 새것! 캠핑용 텐트</h4>
+                    <p class="price">120,000원</p>
+                    <div class="seller"><span>판매자: 박중고</span><span>1시간 전</span></div>
+                </div>
+            </a>
+        </div>
+
+        <!-- 💡 로그인한 유저에게만 보이는 '내가 등록한 물품' 영역 -->
+        <% if (user) { %>
+        <div class="my-items-section">
+            <div class="page-header">
+                <h2 class="page-title">내가 등록한 물품</h2>
+                <a href="/items/manage" class="btn-manage">내 물품 관리 ⚙️</a>
+            </div>
+            
+            <div class="item-grid">
+                <!-- 내가 올린 물품 (임시 데이터) -->
+                <a href="/items/manage" class="item-card">
+                    <div class="item-img-placeholder">이미지 없음</div>
+                    <div class="item-info">
+                        <h4>[내물품] 안쓰는 의자 팝니다</h4>
+                        <p class="price">10,000원</p>
+                        <div class="seller">
+                            <span style="color: #246beb; font-weight: bold;">판매자: <%= user.username %> (나)</span>
+                            <span>어제</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <% } %>
+
     </div>
 
     <footer id="krds-footer">

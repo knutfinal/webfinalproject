@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>판매글 수정 - 중고마켓 동네생활</title>
+
+    <link href="/krds/css/token/krds_tokens.css" rel="stylesheet" />
+    <link href="/krds/css/common/common.css" rel="stylesheet" />
+    <link href="/krds/css/component/component.css" rel="stylesheet" />
+    <script defer src="/krds/js/component/ui-script.js"></script>
+
+    <style>
+        body { background-color: #ffffff; } 
+        #krds-footer { background-color: #f4f6f9; margin-top: 80px; padding: 30px 0; border-top: 1px solid #e9ecef; }
+        
+        .btn-logout-fix::before, .btn-logout-fix::after { display: none !important; }
+        .btn-logout-fix { display: inline-flex !important; flex-direction: row !important; align-items: center !important; gap: 4px !important; width: auto !important; white-space: nowrap !important; }
+        .btn-logout-fix svg { display: block !important; margin: 0 !important; }
+        
+        .header-branding { display: flex; align-items: center; width: 100%; }
+        .header-branding .logo, .header-branding .logo a { background: none !important; background-image: none !important; margin: 0; display: flex; align-items: center; }
+
+        .subpage-container { max-width: 900px; margin: 60px auto; padding: 0 20px; min-height: 50vh; }
+        .page-title { font-size: 2.8rem; font-weight: 700; color: #111; margin-bottom: 30px; border-bottom: 2px solid #222; padding-bottom: 16px; }
+
+        .write-form { background: #fff; padding: 40px; border: 1px solid #ced4da; border-radius: 12px; }
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; font-size: 1.6rem; font-weight: 700; color: #333; margin-bottom: 10px; }
+        .form-control { width: 100%; padding: 15px; font-size: 1.6rem; border: 1px solid #ced4da; border-radius: 8px; box-sizing: border-box; }
+        .form-control:focus { border-color: #246beb; outline: none; box-shadow: 0 0 0 3px rgba(36, 107, 235, 0.1); }
+        textarea.form-control { min-height: 300px; resize: vertical; line-height: 1.6; }
+        
+        .txt-import-box { background: #e7f5ff; border: 1px dashed #74c0fc; padding: 20px; border-radius: 8px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; }
+        .txt-import-box p { margin: 0; font-size: 1.4rem; color: #1864ab; font-weight: 500; }
+        .btn-txt-upload { background: #1864ab; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-txt-upload:hover { background: #14558f; }
+
+        .form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 40px; border-top: 1px solid #e9ecef; padding-top: 24px; }
+        .btn-cancel { background: #f1f3f5; color: #495057; border: 1px solid #ced4da; padding: 14px 30px; font-size: 1.6rem; font-weight: bold; border-radius: 6px; cursor: pointer; text-decoration: none; }
+        .btn-submit { background: #246beb; color: #fff; border: none; padding: 14px 40px; font-size: 1.6rem; font-weight: bold; border-radius: 6px; cursor: pointer; }
+    </style>
+</head>
+<body>
+<div id="wrap" class="g-wrap">
+
+    <header id="krds-header">
+        <div class="header-in">
+            <div class="header-container">
+                <div class="inner">
+                    <div class="header-branding">
+                        <h1 class="logo">
+                            <a href="/" style="display: block;">
+                                <img src="/sitelogo.png" alt="사이트 로고" style="height: 45px; width: auto; max-width: 100%; object-fit: contain;">
+                            </a>
+                        </h1>
+
+                        <div class="header-actions" style="margin-left: auto;">
+                            <span class="btn-navi my" style="background:none; cursor:default;">
+                                <strong><%= user.username %></strong>님
+                            </span>
+                            <a href="/logout" class="btn-navi btn-logout-fix" style="text-decoration: none; color: #333;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:-2px;">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                    <polyline points="16 17 21 12 16 7"></polyline>
+                                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                                </svg>
+                                <span>로그아웃</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="krds-main-menu">
+                <div class="inner">
+                    <ul class="gnb-menu" aria-label="메인 메뉴">
+                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/info'">서비스 안내</button></li>
+                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/board'">게시판</button></li>
+                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/friends'">친구 관리</button></li>
+                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/items'">판매 물품 정보</button></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div id="container" class="subpage-container">
+        <h2 class="page-title">내 판매글 수정</h2>
+        
+        <div class="write-form">
+            
+            <div class="txt-import-box">
+                <p>기존 내용을 대체하거나 추가할 .txt 파일이 있다면 불러오세요!</p>
+                <input type="file" id="txtUpload" accept=".txt" style="display: none;">
+                <button type="button" class="btn-txt-upload" onclick="document.getElementById('txtUpload').click();">문서 첨부 (.txt)</button>
+            </div>
+
+            <form action="/items/edit" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="itemTitle">물품명</label>
+                    <input type="text" id="itemTitle" name="itemTitle" class="form-control" value="안쓰는 의자 팝니다" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="itemPrice">판매 가격 (원)</label>
+                    <input type="number" id="itemPrice" name="itemPrice" class="form-control" value="10000" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="itemImage">대표 이미지 첨부 (기존 이미지 유지시 생략)</label>
+                    <input type="file" id="itemImage" name="itemImage" class="form-control" accept="image/*">
+                </div>
+
+                <div class="form-group">
+                    <label for="itemContent">상세 설명</label>
+                    <textarea id="itemContent" name="itemContent" class="form-control">상태 아주 깨끗합니다. 직거래 원해요.</textarea>
+                </div>
+
+                <div class="form-actions">
+                    <a href="/items/manage" class="btn-cancel">취소</a>
+                    <button type="submit" class="btn-submit">수정 완료하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer id="krds-footer">
+        <div class="inner">
+            <div class="f-btm">
+                <div class="f-btm-text">
+                    <div class="f-menu">
+                        <a href="/terms" class="krds-btn small text">이용 안내</a>
+                        <a href="/privacy" class="krds-btn small text">개인정보처리방침</a>
+                        <a href="/copyright" class="krds-btn small text">저작권 정책</a>
+                    </div>
+                    <p class="f-copy">© 2026 Korea National University of Transportation. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+<script>
+    document.getElementById('txtUpload').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        if (file.name.split('.').pop().toLowerCase() !== 'txt') {
+            alert('텍스트(.txt) 파일만 첨부할 수 있습니다.');
+            event.target.value = ''; 
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const textArea = document.getElementById('itemContent');
+            if (textArea.value.trim() !== '') {
+                textArea.value += '\n\n[추가된 내용]\n' + e.target.result;
+            } else {
+                textArea.value = e.target.result;
+            }
+            alert('문서 내용이 성공적으로 덧붙여졌습니다!');
+        };
+        reader.onerror = function() {
+            alert('파일을 읽는 중 오류가 발생했습니다.');
+        };
+        reader.readAsText(file, 'UTF-8');
+    });
+</script>
+
+</body>
+</html>

@@ -44,6 +44,13 @@
             display: flex; 
             align-items: center; 
         }
+
+        /* 로그인실패팝업용 */
+        #modal_overlay { position: fixed; z-index: 99998; top: 0; left: 0; width: 100%; height: 100%; background: rgb(0, 0, 0); opacity: 0.4; }
+        #modal_container { position: fixed; z-index: 99999; padding: 30px 20px 20px 20px; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); min-width: 320px; max-width: 400px; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+        #modal_message { font-size: 1.6rem; color: #333; line-height: 1.5; margin-bottom: 24px; word-break: keep-all; font-weight: 500; }
+        #modal_ok { background: #246beb; color: #fff; border: none; padding: 10px 30px; font-size: 1.5rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        #modal_ok:hover { background: #1d56bc; }
     </style>
 </head>
 <body>
@@ -90,7 +97,7 @@
                         <li><button type="button" class="gnb-main-trigger" onclick="location.href='/info'">서비스 안내</button></li>
                         <li><button type="button" class="gnb-main-trigger" onclick="location.href='/board'">게시판</button></li>
                         <li><button type="button" class="gnb-main-trigger" onclick="location.href='/friends'">친구 관리</button></li>
-                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/items'">아이템 관리</button></li>
+                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/items'">판매 물품 정보</button></li>
                     </ul>
                 </div>
             </nav>
@@ -169,5 +176,23 @@
     </footer>
 
 </div>
+<% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+    <div id="modal_overlay"></div>
+    <div id="modal_container" tabindex="0">
+        <div id="modal_content" class="alert">
+            <div id="modal_message"><%- errorMessage %></div>
+            <div id="modal_panel">
+                <button type="button" id="modal_ok">&nbsp;확인&nbsp;</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('modal_ok').addEventListener('click', function() {
+            document.getElementById('modal_overlay').style.display = 'none';
+            document.getElementById('modal_container').style.display = 'none';
+        });
+    </script>
+<% } %>
 </body>
 </html>
