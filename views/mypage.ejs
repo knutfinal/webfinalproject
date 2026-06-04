@@ -33,8 +33,8 @@
 
         .section-title { font-size: 2.2rem; font-weight: 700; color: #111; margin-bottom: 20px; }
         .item-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-        .item-card { background: #fff; border-radius: 12px; border: 1px solid #ced4da; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: transform 0.2s; }
-        .item-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .item-card { background: #fff; border-radius: 12px; border: 1px solid #ced4da; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: transform 0.2s; text-decoration: none; color: inherit; display: block; }
+        .item-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); border-color: #246beb; }
         
         .item-img-placeholder { height: 200px; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; color: #adb5bd; font-size: 1.4rem; border-bottom: 1px solid #ced4da; }
         .item-img { width: 100%; height: 200px; object-fit: cover; border-bottom: 1px solid #ced4da; }
@@ -116,50 +116,37 @@
             </a>
             <a href="/items" class="nav-card">
                 <span class="icon">📦</span>
-                <span class="title">물품 관리</span>
+                <span class="title">판매 물품 정보</span>
             </a>
         </div>
 
         <h3 class="section-title">가장 최근 이웃이 올린 판매 물품</h3>
         <div class="item-grid">
             
-            <div class="item-card">
-                <div class="item-img-placeholder">이미지 없음</div>
-                <div class="item-info">
-                    <h4>이웃 판매글 1</h4>
-                    <p class="price">35,000원</p>
-                    <div class="seller">
-                        <span>판매자: 김동네</span>
-                        <span class="friend-badge">내 이웃</span>
+            <% if (typeof recentItems !== 'undefined' && recentItems.length > 0) { %>
+                <% recentItems.forEach(function(item) { %>
+                <a href="/items" class="item-card">
+                    <% if (item.image) { %>
+                        <img src="<%= item.image %>" class="item-img" alt="물품 이미지">
+                    <% } else { %>
+                        <div class="item-img-placeholder">이미지 없음</div>
+                    <% } %>
+                    <div class="item-info">
+                        <h4><%= item.title %></h4>
+                        <p class="price"><%= item.price.toLocaleString() %>원</p>
+                        <div class="seller">
+                            <span>판매자: <%= item.author %></span>
+                            <span class="friend-badge">내 이웃</span>
+                        </div>
                     </div>
+                </a>
+                <% }) %>
+            <% } else { %>
+                <div style="grid-column: span 3; text-align: center; padding: 60px 0; background: #fff; border-radius: 12px; border: 1px dashed #ced4da; font-size: 1.6rem; color: #868e96;">
+                    아직 이웃이 올린 판매 물품이 없습니다.<br>친구를 추가하고 새로운 소식을 확인해 보세요!
                 </div>
+            <% } %>
             </div>
-
-            <div class="item-card">
-                <div class="item-img-placeholder">이미지 없음</div>
-                <div class="item-info">
-                    <h4>이웃 판매글 2</h4>
-                    <p class="price">120,000원</p>
-                    <div class="seller">
-                        <span>판매자: 박중고</span>
-                        <span class="friend-badge">내 이웃</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="item-card">
-                <div class="item-img-placeholder">이미지 없음</div>
-                <div class="item-info">
-                    <h4>이웃 판매글 3</h4>
-                    <p class="price">15,000원</p>
-                    <div class="seller">
-                        <span>판매자: 최마켓</span>
-                        <span class="friend-badge">내 이웃</span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
     </div>
 
     <footer id="krds-footer">

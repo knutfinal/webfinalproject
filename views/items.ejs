@@ -101,47 +101,50 @@
             <a href="/items/write" class="btn-write">판매글 등록하기</a>
         </div>
         
-        <div class="item-grid">
-            <!-- 다른 사람들이 올린 물품 (임시) -->
+<div class="item-grid">
+            <% items.forEach(function(item) { %>
             <a href="#" class="item-card">
-                <div class="item-img-placeholder">이미지 없음</div>
+                <% if (item.image) { %>
+                    <img src="<%= item.image %>" class="item-img" alt="물품 이미지">
+                <% } else { %>
+                    <div class="item-img-placeholder">이미지 없음</div>
+                <% } %>
                 <div class="item-info">
-                    <h4>가죽 자전거 안장 팝니다</h4>
-                    <p class="price">35,000원</p>
-                    <div class="seller"><span>판매자: 김동네</span><span>방금 전</span></div>
+                    <h4><%= item.title %></h4>
+                    <p class="price"><%= item.price.toLocaleString() %>원</p>
+                    <div class="seller"><span>판매자: <%= item.author %></span><span><%= item.createdAt.toLocaleDateString() %></span></div>
                 </div>
             </a>
-            <a href="#" class="item-card">
-                <div class="item-img-placeholder">이미지 없음</div>
-                <div class="item-info">
-                    <h4>거의 새것! 캠핑용 텐트</h4>
-                    <p class="price">120,000원</p>
-                    <div class="seller"><span>판매자: 박중고</span><span>1시간 전</span></div>
-                </div>
-            </a>
+            <% }) %>
+            <% if(items.length === 0) { %><p>아직 등록된 물품이 없습니다.</p><% } %>
         </div>
 
-        <!-- 로그인한 유저에게만 보이는 '내가 등록한 물품' 영역 -->
         <% if (user) { %>
         <div class="my-items-section">
             <div class="page-header">
                 <h2 class="page-title">내가 등록한 물품</h2>
-                <a href="/items/manage" class="btn-manage">내 물품 관리 ⚙️</a>
+                <a href="/items/manage" class="btn-manage">내 물품 관리</a>
             </div>
             
             <div class="item-grid">
-                <!-- 내가 올린 물품 (임시 데이터) -->
+                <% myItems.forEach(function(item) { %>
                 <a href="/items/manage" class="item-card">
-                    <div class="item-img-placeholder">이미지 없음</div>
+                    <% if (item.image) { %>
+                        <img src="<%= item.image %>" class="item-img" alt="물품 이미지">
+                    <% } else { %>
+                        <div class="item-img-placeholder">이미지 없음</div>
+                    <% } %>
                     <div class="item-info">
-                        <h4>[내물품] 안쓰는 의자 팝니다</h4>
-                        <p class="price">10,000원</p>
+                        <h4><%= item.title %></h4>
+                        <p class="price"><%= item.price.toLocaleString() %>원</p>
                         <div class="seller">
-                            <span style="color: #246beb; font-weight: bold;">판매자: <%= user.username %> (나)</span>
-                            <span>어제</span>
+                            <span style="color: #246beb; font-weight: bold;">판매자: <%= item.author %> (나)</span>
+                            <span><%= item.createdAt.toLocaleDateString() %></span>
                         </div>
                     </div>
                 </a>
+                <% }) %>
+                <% if(myItems.length === 0) { %><p>등록한 물품이 없습니다.</p><% } %>
             </div>
         </div>
         <% } %>

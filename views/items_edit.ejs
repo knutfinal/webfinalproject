@@ -96,15 +96,15 @@
                 <button type="button" class="btn-txt-upload" onclick="document.getElementById('txtUpload').click();">문서 첨부 (.txt)</button>
             </div>
 
-            <form action="/items/edit" method="POST" enctype="multipart/form-data">
+            <form action="/items/edit/<%= item._id %>" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="itemTitle">물품명</label>
-                    <input type="text" id="itemTitle" name="itemTitle" class="form-control" value="안쓰는 의자 팝니다" required>
+                    <input type="text" id="itemTitle" name="itemTitle" class="form-control" value="<%= item.title %>" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="itemPrice">판매 가격 (원)</label>
-                    <input type="number" id="itemPrice" name="itemPrice" class="form-control" value="10000" required>
+                    <input type="number" id="itemPrice" name="itemPrice" class="form-control" value="<%= item.price %>" required>
                 </div>
 
                 <div class="form-group">
@@ -114,7 +114,7 @@
 
                 <div class="form-group">
                     <label for="itemContent">상세 설명</label>
-                    <textarea id="itemContent" name="itemContent" class="form-control">상태 아주 깨끗합니다. 직거래 원해요.</textarea>
+                    <textarea id="itemContent" name="itemContent" class="form-control"><%= item.content %></textarea>
                 </div>
 
                 <div class="form-actions">

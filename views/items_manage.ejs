@@ -87,7 +87,7 @@
     <div id="container" class="subpage-container">
         <div class="page-header">
             <h2 class="page-title">내 판매 물품 관리</h2>
-            <a href="/items/write" class="btn-write">새 판매글 등록하기 ✏️</a>
+            <a href="/items/write" class="btn-write">새 판매글 등록하기</a>
         </div>
         
         <table class="manage-list">
@@ -107,21 +107,26 @@
                     <th>관리</th>
                 </tr>
             </thead><tbody>
+                <% myItems.forEach(function(item, index) { %>
                 <tr>
-                    <td>1</td>
-                    <td class="title-col">안쓰는 의자 팝니다</td>
-                    <td>10,000원</td>
-                    <td>2026.06.04</td>
+                    <td><%= index + 1 %></td>
+                    <td class="title-col"><%= item.title %></td>
+                    <td><%= item.price.toLocaleString() %>원</td>
+                    <td><%= item.createdAt.toLocaleDateString() %></td>
                     <td>
                         <div class="action-btns">
-                            <a href="/items/edit" class="btn-edit">수정</a>
+                            <a href="/items/edit/<%= item._id %>" class="btn-edit">수정</a>
                             
-                            <form action="/items/delete" method="POST" style="display:inline; margin:0;">
-                                <button type="submit" class="btn-delete" onclick="return confirm('정말 삭제하시겠습니까? 삭제 후에는 복구할 수 없습니다.');">삭제</button>
+                            <form action="/items/delete/<%= item._id %>" method="POST" style="display:inline; margin:0;">
+                                <button type="submit" class="btn-delete" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
                             </form>
                         </div>
                     </td>
                 </tr>
+                <% }) %>
+                <% if(myItems.length === 0) { %>
+                    <tr><td colspan="5">등록하신 물품이 없습니다.</td></tr>
+                <% } %>
             </tbody>
         </table>
 

@@ -16,6 +16,23 @@ const app = express();
 app.use(bodyParser.json());
 const PORT = process.env.PORT || 3000;
 
+const Item = require('./models/Item'); // 물품 설계도 불러오기
+const multer = require('multer');      // 이미지 업로드 도구 불러오기
+
+// Multer 설정 (이미지를 public/uploads 폴더에 저장)
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname); // 파일명 중복 방지
+    }
+});
+const upload = multer({ storage: storage });
+
+// 브라우저가 uploads 폴더의 사진을 볼 수 있도록 폴더 개방
+app.use(express.static('public'));
+
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true })); 
 app.use(express.json());
@@ -109,70 +126,117 @@ app.get('/logout', (req, res) => {
     });
 });
 
-app.get('/items', (req, res) => res.render('items', { user: req.session.user }));
-
-// 판매글 작성 페이지 (로그인한 사람만 접근 가능)
-app.get('/items/write', (req, res) => {
-    if (!req.session.user) {
-        return res.send(`<script>alert("로그인이 필요한 서비스입니다."); window.location.href="/login";</script>`);
+// 전체 물품 및 내 물품 목록 보기 (GET)
+app.get('/items', async (req, res) => {
+    try {
+        const items = await Item.find().sort({ createdAt: -1 }); // 최신순으로 모든 물품 조회
+        let myItems = [];
+        if (req.session.user) {
+            myItems = await Item.find({ author: req.session.user.username }).sort({ createdAt: -1 });
+        }
+        res.render('items', { user: req.session.user, items: items, myItems: myItems });
+    } catch (err) {
+        res.send("데이터를 불러오는 중 오류가 발생했습니다.");
     }
+});
+
+// 판매글 작성 페이지 띄우기 (GET)
+app.get('/items/write', (req, res) => {
+    if (!req.session.user) return res.send(`<script>alert("로그인이 필요합니다."); window.location.href="/login";</script>`);
     res.render('items_write', { user: req.session.user });
 });
 
-// 개별 서브 페이지
-app.get('/info', (req, res) => res.render('info', { user: req.session.user }));
-app.get('/board', (req, res) => res.render('board', { user: req.session.user }));
-app.get('/friends', (req, res) => res.render('friends', { user: req.session.user }));
-app.get('/items', (req, res) => res.render('items', { user: req.session.user }));
-
-// 판매글 작성 폼 (GET)
-app.get('/items/write', (req, res) => {
-    if (!req.session.user) {
-        return res.send(`<script>alert("로그인이 필요한 서비스입니다."); window.location.href="/login";</script>`);
+// 작성된 판매글 DB 저장 (POST)
+app.post('/items/write', upload.single('itemImage'), async (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
+    try {
+        const imagePath = req.file ? '/uploads/' + req.file.filename : ''; // 이미지가 첨부되었으면 경로 저장
+        
+        const newItem = new Item({
+            title: req.body.itemTitle,
+            price: req.body.itemPrice,
+            content: req.body.itemContent,
+            image: imagePath,
+            author: req.session.user.username
+        });
+        
+        await newItem.save(); // DB에 저장!
+        res.send(`<script>alert("성공적으로 등록되었습니다!"); window.location.href="/items";</script>`);
+    } catch (err) {
+        console.log(err);
+        res.send(`<script>alert("등록 중 오류가 발생했습니다."); window.location.href="/items/write";</script>`);
     }
-    res.render('items_write', { user: req.session.user });
-});
-
-// 작성된 판매글 처리 (POST)
-app.post('/items/write', (req, res) => {
-    // 임시로 DB 연동 전이므로 성공 팝업만 띄우고 판매 물품 정보 페이지로 이동
-    res.send(`<script>alert("판매글이 성공적으로 등록되었습니다!"); window.location.href="/items";</script>`);
 });
 
 // 내 판매 물품 관리 페이지 (GET)
-app.get('/items/manage', (req, res) => {
-    if (!req.session.user) {
-        return res.send(`<script>alert("로그인이 필요한 서비스입니다."); window.location.href="/login";</script>`);
+app.get('/items/manage', async (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
+    try {
+        const myItems = await Item.find({ author: req.session.user.username }).sort({ createdAt: -1 });
+        res.render('items_manage', { user: req.session.user, myItems: myItems });
+    } catch (err) {
+        res.send("오류가 발생했습니다.");
     }
-    res.render('items_manage', { user: req.session.user });
 });
 
 // 판매글 수정 페이지 띄우기 (GET)
-app.get('/items/edit', (req, res) => {
-    if (!req.session.user) {
-        return res.send(`<script>alert("로그인이 필요한 서비스입니다."); window.location.href="/login";</script>`);
+app.get('/items/edit/:id', async (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
+    try {
+        const item = await Item.findById(req.params.id);
+        if (item.author !== req.session.user.username) return res.send(`<script>alert("권한이 없습니다."); window.location.href="/items";</script>`);
+        res.render('items_edit', { user: req.session.user, item: item });
+    } catch (err) {
+        res.send("오류가 발생했습니다.");
     }
-    res.render('items_edit', { user: req.session.user });
 });
 
-// 판매글 수정 데이터 처리 (POST)
-app.post('/items/edit', (req, res) => {
-    // 임시 / 나중에 이곳에 DB 업데이트 코드가 들어감
-    res.send(`<script>alert("판매글이 성공적으로 수정되었습니다!"); window.location.href="/items/manage";</script>`);
+// 판매글 수정 DB 업데이트 (POST)
+app.post('/items/edit/:id', upload.single('itemImage'), async (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
+    try {
+        const updateData = {
+            title: req.body.itemTitle,
+            price: req.body.itemPrice,
+            content: req.body.itemContent
+        };
+        if (req.file) updateData.image = '/uploads/' + req.file.filename; // 새 사진을 올린 경우에만 사진 업데이트
+
+        await Item.findByIdAndUpdate(req.params.id, updateData);
+        res.send(`<script>alert("수정되었습니다!"); window.location.href="/items/manage";</script>`);
+    } catch (err) {
+        res.send("수정 중 오류가 발생했습니다.");
+    }
 });
 
-// 판매글 삭제 처리 (POST)
-app.post('/items/delete', (req, res) => {
-    // 임시 / 나중에 이곳에 DB 삭제 코드가 들어갑
-    res.send(`<script>alert("판매글이 삭제되었습니다."); window.location.href="/items/manage";</script>`);
+// 판매글 DB 삭제 (POST)
+app.post('/items/delete/:id', async (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
+    try {
+        await Item.findByIdAndDelete(req.params.id);
+        res.send(`<script>alert("삭제되었습니다."); window.location.href="/items/manage";</script>`);
+    } catch (err) {
+        res.send("삭제 중 오류가 발생했습니다.");
+    }
 });
 
 // 마이페이지는 로그인이 안 되어 있으면 로그인 창으로 튕겨냄
-app.get('/mypage', (req, res) => {
+app.get('/mypage', async (req, res) => {
     if (!req.session.user) {
         return res.redirect('/login');
     }
-    res.render('mypage', { user: req.session.user });
+    
+    try {
+        // 임시 ／ 아직 '친구' DB 모델이 없으므로, '내가 아닌 다른 유저들'이 올린 최신 물품 3개를 가져옵니다.
+        const recentItems = await Item.find({ author: { $ne: req.session.user.username } })
+                                      .sort({ createdAt: -1 }) // 최신순
+                                      .limit(3);               // 딱 3개만
+
+        res.render('mypage', { user: req.session.user, recentItems: recentItems });
+    } catch (err) {
+        console.log(err);
+        res.send(`<script>alert("데이터를 불러오는 중 오류가 발생했습니다."); window.location.href="/";</script>`);
+    }
 });
 
 app.get('/terms', (req, res) => res.render('terms', { user: req.session.user }));
