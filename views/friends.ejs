@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ｆｒｉｅｎｄｓ - 중고마켓 동네생활</title>
+    <title>친구 관리 - 중고마켓 동네생활</title>
 
     <link href="/krds/css/token/krds_tokens.css" rel="stylesheet" />
     <link href="/krds/css/common/common.css" rel="stylesheet" />
@@ -11,8 +11,8 @@
     <script defer src="/krds/js/component/ui-script.js"></script>
 
     <style>
-        body { background-color: #f4f6f9; } 
-        #krds-footer { background-color: #f4f6f9; margin-top: 60px; padding: 30px 0; border-top: 1px solid #e9ecef; }
+        body { background-color: #ffffff; } 
+        #krds-footer { background-color: #f4f6f9; margin-top: 80px; padding: 30px 0; border-top: 1px solid #e9ecef; }
         
         .btn-logout-fix::before, .btn-logout-fix::after { display: none !important; }
         .btn-logout-fix { display: inline-flex !important; flex-direction: row !important; align-items: center !important; gap: 4px !important; width: auto !important; white-space: nowrap !important; }
@@ -21,9 +21,26 @@
         .header-branding { display: flex; align-items: center; width: 100%; }
         .header-branding .logo, .header-branding .logo a { background: none !important; background-image: none !important; margin: 0; display: flex; align-items: center; }
 
-        .subpage-container { max-width: 1200px; margin: 60px auto; padding: 0 20px; min-height: 40vh; }
-        .page-title { font-size: 2.8rem; font-weight: 700; color: #111; margin-bottom: 24px; border-bottom: 2px solid #222; padding-bottom: 16px; }
-        .dummy-box { background: #ffffff; border: 1px dashed #ced4da; border-radius: 12px; padding: 80px 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .subpage-container { max-width: 900px; margin: 60px auto; padding: 0 20px; min-height: 50vh; }
+        .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; border-bottom: 2px solid #222; padding-bottom: 16px; }
+        .page-title { font-size: 2.8rem; font-weight: 700; color: #111; margin: 0; }
+        
+        /* 이웃 추가 폼 */
+        .add-friend-box { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 30px; margin-bottom: 40px; display: flex; gap: 15px; align-items: center; }
+        .add-friend-box label { font-size: 1.6rem; font-weight: 700; color: #333; white-space: nowrap; }
+        .add-friend-box input { flex: 1; padding: 12px 16px; font-size: 1.6rem; border: 1px solid #ced4da; border-radius: 6px; }
+        .add-friend-box input:focus { border-color: #246beb; outline: none; }
+        .btn-add { background-color: #246beb; color: #fff; border: none; padding: 12px 30px; font-size: 1.6rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .btn-add:hover { background-color: #1d56bc; }
+
+        /* 친구 관리 테이블 */
+        .manage-list { width: 100%; border-collapse: collapse; border-top: 2px solid #495057; }
+        .manage-list th, .manage-list td { padding: 16px; border-bottom: 1px solid #e9ecef; text-align: center; font-size: 1.5rem; }
+        .manage-list th { background-color: #f8f9fa; color: #333; font-weight: bold; }
+        .manage-list td.title-col { text-align: left; font-weight: bold; color: #111; font-size: 1.8rem; }
+        
+        .btn-delete { background-color: #fff0f6; color: #e03131; border: 1px solid #ffc9c9; padding: 6px 16px; border-radius: 4px; font-size: 1.3rem; cursor: pointer; transition: 0.2s; }
+        .btn-delete:hover { background-color: #ffe3e3; }
     </style>
 </head>
 <body>
@@ -41,23 +58,17 @@
                         </h1>
 
                         <div class="header-actions" style="margin-left: auto;">
-                            <% if (user) { %>
-                                <span class="btn-navi my" style="background:none; cursor:default;">
-                                    <strong><%= user.username %></strong>님
-                                </span>
-                                
-                                <a href="/logout" class="btn-navi btn-logout-fix" style="text-decoration: none; color: #333;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:-2px;">
-                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                                        <polyline points="16 17 21 12 16 7"></polyline>
-                                        <line x1="21" y1="12" x2="9" y2="12"></line>
-                                    </svg>
-                                    <span>로그아웃</span>
-                                </a>
-                            <% } else { %>
-                                <a href="/login" class="btn-navi login">로그인</a>
-                                <a href="/signup" class="btn-navi join">회원가입</a>
-                            <% } %>
+                            <span class="btn-navi my" style="background:none; cursor:default;">
+                                <strong><%= user.username %></strong>님
+                            </span>
+                            <a href="/logout" class="btn-navi btn-logout-fix" style="text-decoration: none; color: #333;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:-2px;">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                    <polyline points="16 17 21 12 16 7"></polyline>
+                                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                                </svg>
+                                <span>로그아웃</span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -77,13 +88,53 @@
     </header>
 
     <div id="container" class="subpage-container">
-        <h2 class="page-title">ｆｒｉｅｎｄｓ</h2>
-        
-        <div class="dummy-box">
-            <h3 style="font-size: 2rem; margin-bottom: 12px; color: #333;">화면 준비 중입니다</h3>
-            <p style="font-size: 1.2rem; color: #666; margin-bottom: 24px;">해당 기능은 추후 업데이트를 통해 제공될 예정입니다.</p>
-            <a href="/" class="krds-btn medium primary">메인으로 돌아가기</a>
+        <div class="page-header">
+            <h2 class="page-title">내 이웃(친구) 관리</h2>
         </div>
+        
+        <!-- 이웃 추가 검색 폼 -->
+        <form action="/friends/add" method="POST" class="add-friend-box">
+            <label for="friendName">새로운 이웃 추가</label>
+            <input type="text" id="friendName" name="friendName" placeholder="추가할 사용자의 아이디를 정확히 입력해주세요." required>
+            <button type="submit" class="btn-add">이웃 맺기</button>
+        </form>
+
+        <!-- 이웃 리스트 테이블 -->
+        <table class="manage-list">
+            <colgroup>
+                <col style="width: 10%;">
+                <col style="width: auto;">
+                <col style="width: 20%;">
+                <col style="width: 15%;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>이웃 아이디</th>
+                    <th>친구 등록일</th>
+                    <th>관리</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (typeof friends !== 'undefined' && friends.length > 0) { %>
+                    <% friends.forEach(function(friend, index) { %>
+                    <tr>
+                        <td><%= index + 1 %></td>
+                        <td class="title-col"> <%= friend.friendName %></td>
+                        <td><%= friend.createdAt.toLocaleDateString() %></td>
+                        <td>
+                            <form action="/friends/delete/<%= friend._id %>" method="POST" style="margin: 0;">
+                                <button type="submit" class="btn-delete" onclick="return confirm('정말 이웃을 삭제하시겠습니까?');">삭제</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr><td colspan="4" style="padding: 40px 0; color: #888;">아직 추가한 이웃이 없습니다. 아이디를 검색해 이웃을 맺어보세요!</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+
     </div>
 
     <footer id="krds-footer">

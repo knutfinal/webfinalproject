@@ -16,21 +16,27 @@ const app = express();
 app.use(bodyParser.json());
 const PORT = process.env.PORT || 3000;
 
-const Item = require('./models/Item'); // 물품 설계도 불러오기
-const multer = require('multer');      // 이미지 업로드 도구 불러오기
+const Item = require('./models/Item');
+const Friend = require('./models/Friend');
+const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
-// Multer 설정 (이미지를 public/uploads 폴더에 저장)
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'public/uploads/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname); // 파일명 중복 방지
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_KEY,
+    api_secret: process.env.CLOUDINARY_SECRET
+});
+
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'dongne_market',
+        allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp']
     }
 });
 const upload = multer({ storage: storage });
 
-// 브라우저가 uploads 폴더의 사진을 볼 수 있도록 폴더 개방
 app.use(express.static('public'));
 
 app.set('view engine', 'ejs');
@@ -150,7 +156,7 @@ app.get('/items/write', (req, res) => {
 app.post('/items/write', upload.single('itemImage'), async (req, res) => {
     if (!req.session.user) return res.redirect('/login');
     try {
-        const imagePath = req.file ? '/uploads/' + req.file.filename : ''; // 이미지가 첨부되었으면 경로 저장
+        const imagePath = req.file ? req.file.path : '';
         
         const newItem = new Item({
             title: req.body.itemTitle,
@@ -200,7 +206,7 @@ app.post('/items/edit/:id', upload.single('itemImage'), async (req, res) => {
             price: req.body.itemPrice,
             content: req.body.itemContent
         };
-        if (req.file) updateData.image = '/uploads/' + req.file.filename; // 새 사진을 올린 경우에만 사진 업데이트
+        if (req.file) updateData.image = req.file.path;
 
         await Item.findByIdAndUpdate(req.params.id, updateData);
         res.send(`<script>alert("수정되었습니다!"); window.location.href="/items/manage";</script>`);
@@ -222,19 +228,75 @@ app.post('/items/delete/:id', async (req, res) => {
 
 app.get('/info', (req, res) => res.render('info', { user: req.session.user }));
 app.get('/board', (req, res) => res.render('board', { user: req.session.user }));
-app.get('/friends', (req, res) => res.render('friends', { user: req.session.user }));
 
-// 마이페이지는 로그인이 안 되어 있으면 로그인 창으로 튕겨냄
+// 친구 관리 페이지 띄우기 (GET)
+app.get('/friends', async (req, res) => {
+    if (!req.session.user) return res.send(`<script>alert("로그인이 필요합니다."); window.location.href="/login";</script>`);
+    try {
+        // 내가 추가한 친구 목록을 DB에서 가져옴
+        const friends = await Friend.find({ username: req.session.user.username }).sort({ createdAt: -1 });
+        res.render('friends', { user: req.session.user, friends: friends });
+    } catch (err) {
+        res.send("오류가 발생했습니다.");
+    }
+});
+
+// 친구 추가 처리 (POST)
+app.post('/friends/add', async (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
+    try {
+        const targetName = req.body.friendName.trim();
+        
+        // 자기 자신 추가 방지
+        if (targetName === req.session.user.username) {
+            return res.send(`<script>alert("자기 자신은 이웃으로 추가할 수 없습니다."); window.history.back();</script>`);
+        }
+
+        // 실제 존재하는 유저인지 확인
+        const targetUser = await User.findOne({ username: targetName });
+        if (!targetUser) {
+            return res.send(`<script>alert("존재하지 않는 사용자입니다. 아이디를 다시 확인해주세요."); window.history.back();</script>`);
+        }
+
+        // 이미 추가된 친구인지 중복 확인
+        const existingFriend = await Friend.findOne({ username: req.session.user.username, friendName: targetName });
+        if (existingFriend) {
+            return res.send(`<script>alert("이미 등록된 이웃입니다."); window.history.back();</script>`);
+        }
+
+        // DB에 친구 저장
+        const newFriend = new Friend({ username: req.session.user.username, friendName: targetName });
+        await newFriend.save();
+        res.send(`<script>alert("새로운 이웃이 추가되었습니다!"); window.location.href="/friends";</script>`);
+    } catch (err) {
+        res.send("친구 추가 중 오류가 발생했습니다.");
+    }
+});
+
+// 친구 삭제 처리 (POST)
+app.post('/friends/delete/:id', async (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
+    try {
+        await Friend.findByIdAndDelete(req.params.id);
+        res.send(`<script>alert("이웃이 삭제되었습니다."); window.location.href="/friends";</script>`);
+    } catch (err) {
+        res.send("삭제 중 오류가 발생했습니다.");
+    }
+});
+
 app.get('/mypage', async (req, res) => {
     if (!req.session.user) {
         return res.redirect('/login');
     }
-    
     try {
-        // 임시 ／ 아직 '친구' DB 모델이 없으므로, '내가 아닌 다른 유저들'이 올린 최신 물품 3개를 가져옵니다.
-        const recentItems = await Item.find({ author: { $ne: req.session.user.username } })
-                                      .sort({ createdAt: -1 }) // 최신순
-                                      .limit(3);               // 딱 3개만
+        // 1. 내 친구들 아이디 목록 뽑아오기
+        const myFriends = await Friend.find({ username: req.session.user.username });
+        const friendNames = myFriends.map(f => f.friendName); 
+
+        // 2. 작성자가 내 친구인 글만 최신순으로 3개 가져오기
+        const recentItems = await Item.find({ author: { $in: friendNames } })
+                                      .sort({ createdAt: -1 })
+                                      .limit(3);
 
         res.render('mypage', { user: req.session.user, recentItems: recentItems });
     } catch (err) {
@@ -246,6 +308,12 @@ app.get('/mypage', async (req, res) => {
 app.get('/terms', (req, res) => res.render('terms', { user: req.session.user }));
 app.get('/privacy', (req, res) => res.render('privacy', { user: req.session.user }));
 app.get('/copyright', (req, res) => res.render('copyright', { user: req.session.user }));
+
+// 에러 발생 시 경고창을 띄워주는 방어 코드
+app.use((err, req, res, next) => {
+    console.error("문제 발생:", err);
+    res.send(`<script>alert("업로드 또는 서버 처리 중 오류가 발생했습니다: ${err.message}"); window.history.back();</script>`);
+});
 
 // 서버 구동
 app.listen(PORT, () => {
