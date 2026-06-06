@@ -32,16 +32,18 @@
         .btn-add { background-color: #246beb; color: #fff; border: none; padding: 12px 30px; font-size: 1.6rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .btn-add:hover { background-color: #1d56bc; }
 
-        .manage-list { width: 100%; border-collapse: collapse; border-top: 2px solid #495057; }
+        .section-title { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 15px; margin-top: 40px; }
+        .manage-list { width: 100%; border-collapse: collapse; border-top: 2px solid #495057; margin-bottom: 40px; }
         .manage-list th, .manage-list td { padding: 16px; border-bottom: 1px solid #e9ecef; text-align: center; font-size: 1.5rem; }
         .manage-list th { background-color: #f8f9fa; color: #333; font-weight: bold; }
         .manage-list td.title-col { text-align: left; font-weight: bold; color: #111; font-size: 1.8rem; }
         
         .btn-delete { background-color: #fff0f6; color: #e03131; border: 1px solid #ffc9c9; padding: 6px 16px; border-radius: 4px; font-size: 1.3rem; cursor: pointer; transition: 0.2s; }
         .btn-delete:hover { background-color: #ffe3e3; }
-        .krds-main-menu .gnb-menu > li > .gnb-main-trigger::after {
-    display: none !important;
-}
+        .btn-force-delete { background-color: #f8f9fa; color: #495057; border: 1px solid #ced4da; padding: 6px 16px; border-radius: 4px; font-size: 1.3rem; cursor: pointer; transition: 0.2s; }
+        .btn-force-delete:hover { background-color: #e9ecef; color: #111; }
+
+        .krds-main-menu .gnb-menu > li > .gnb-main-trigger::after { display: none !important; }
     </style>
 </head>
 <body>
@@ -93,14 +95,13 @@
             <h2 class="page-title">내 이웃(친구) 관리</h2>
         </div>
         
-        <!-- 이웃 추가 검색 폼 -->
         <form action="/friends/add" method="POST" class="add-friend-box">
             <label for="friendName">새로운 이웃 추가</label>
             <input type="text" id="friendName" name="friendName" placeholder="추가할 사용자의 아이디를 정확히 입력해주세요." required>
             <button type="submit" class="btn-add">이웃 맺기</button>
         </form>
 
-        <!-- 이웃 리스트 테이블 -->
+        <h3 class="section-title">내가 추가한 이웃 (팔로잉)</h3>
         <table class="manage-list">
             <colgroup>
                 <col style="width: 10%;">
@@ -132,6 +133,42 @@
                     <% }) %>
                 <% } else { %>
                     <tr><td colspan="4" style="padding: 40px 0; color: #888;">아직 추가한 이웃이 없습니다. 아이디를 검색해 이웃을 맺어보세요!</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+
+        <h3 class="section-title">나를 추가한 이웃 (팔로워)</h3>
+        <table class="manage-list">
+            <colgroup>
+                <col style="width: 10%;">
+                <col style="width: auto;">
+                <col style="width: 20%;">
+                <col style="width: 15%;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>나를 추가한 사용자</th>
+                    <th>친구 등록일</th>
+                    <th>관리</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (typeof followers !== 'undefined' && followers.length > 0) { %>
+                    <% followers.forEach(function(follower, index) { %>
+                    <tr>
+                        <td><%= index + 1 %></td>
+                        <td class="title-col"> <%= follower.username %></td>
+                        <td><%= follower.createdAt.toLocaleDateString() %></td>
+                        <td>
+                            <form action="/friends/delete/<%= follower._id %>" method="POST" style="margin: 0;">
+                                <button type="submit" class="btn-force-delete" onclick="return confirm('나를 친구로 추가한 사용자를 정말로 삭제하시겠습니까?');">친구 삭제</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr><td colspan="4" style="padding: 40px 0; color: #888;">아직 나를 추가한 이웃이 없습니다.</td></tr>
                 <% } %>
             </tbody>
         </table>

@@ -413,9 +413,17 @@ app.post('/board/:id/comment', async (req, res) => {
 app.get('/friends', async (req, res) => {
     if (!req.session.user) return res.send(`<script>alert("로그인이 필요합니다."); window.location.href="/login";</script>`);
     try {
-        // 내가 추가한 친구 목록을 DB에서 가져옴
+        // 내가 추가한 이웃 목록
         const friends = await Friend.find({ username: req.session.user.username }).sort({ createdAt: -1 });
-        res.render('friends', { user: req.session.user, friends: friends });
+        
+        // 나를 추가한 이웃 목록
+        const followers = await Friend.find({ friendName: req.session.user.username }).sort({ createdAt: -1 });
+
+        res.render('friends', { 
+            user: req.session.user, 
+            friends: friends, 
+            followers: followers 
+        });
     } catch (err) {
         res.send("오류가 발생했습니다.");
     }
@@ -427,24 +435,20 @@ app.post('/friends/add', async (req, res) => {
     try {
         const targetName = req.body.friendName.trim();
         
-        // 자기 자신 추가 방지
         if (targetName === req.session.user.username) {
             return res.send(`<script>alert("자기 자신은 이웃으로 추가할 수 없습니다."); window.history.back();</script>`);
         }
 
-        // 실제 존재하는 유저인지 확인
         const targetUser = await User.findOne({ username: targetName });
         if (!targetUser) {
             return res.send(`<script>alert("존재하지 않는 사용자입니다. 아이디를 다시 확인해주세요."); window.history.back();</script>`);
         }
 
-        // 이미 추가된 친구인지 중복 확인
         const existingFriend = await Friend.findOne({ username: req.session.user.username, friendName: targetName });
         if (existingFriend) {
             return res.send(`<script>alert("이미 등록된 이웃입니다."); window.history.back();</script>`);
         }
 
-        // DB에 친구 저장
         const newFriend = new Friend({ username: req.session.user.username, friendName: targetName });
         await newFriend.save();
         res.send(`<script>alert("새로운 이웃이 추가되었습니다!"); window.location.href="/friends";</script>`);
@@ -457,31 +461,18 @@ app.post('/friends/add', async (req, res) => {
 app.post('/friends/delete/:id', async (req, res) => {
     if (!req.session.user) return res.redirect('/login');
     try {
-        await Friend.findByIdAndDelete(req.params.id);
-        res.send(`<script>alert("이웃이 삭제되었습니다."); window.location.href="/friends";</script>`);
+        const friendRecord = await Friend.findById(req.params.id);
+        if (!friendRecord) return res.send(`<script>alert("존재하지 않는 기록입니다."); window.history.back();</script>`);
+
+        // 내가 추가한 기록이거나, 나를 추가한 기록인 경우에만 삭제 허용
+        if (friendRecord.username === req.session.user.username || friendRecord.friendName === req.session.user.username) {
+            await Friend.findByIdAndDelete(req.params.id);
+            res.send(`<script>alert("이웃 관계가 삭제되었습니다."); window.location.href="/friends";</script>`);
+        } else {
+            res.send(`<script>alert("권한이 없습니다."); window.history.back();</script>`);
+        }
     } catch (err) {
         res.send("삭제 중 오류가 발생했습니다.");
-    }
-});
-
-app.get('/mypage', async (req, res) => {
-    if (!req.session.user) {
-        return res.redirect('/login');
-    }
-    try {
-        // 1. 내 친구들 아이디 목록 뽑아오기
-        const myFriends = await Friend.find({ username: req.session.user.username });
-        const friendNames = myFriends.map(f => f.friendName); 
-
-        // 2. 작성자가 내 친구인 글만 최신순으로 3개 가져오기
-        const recentItems = await Item.find({ author: { $in: friendNames } })
-                                      .sort({ createdAt: -1 })
-                                      .limit(3);
-
-        res.render('mypage', { user: req.session.user, recentItems: recentItems });
-    } catch (err) {
-        console.log(err);
-        res.send(`<script>alert("데이터를 불러오는 중 오류가 발생했습니다."); window.location.href="/";</script>`);
     }
 });
 
