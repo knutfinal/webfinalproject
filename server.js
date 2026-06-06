@@ -227,6 +227,58 @@ app.post('/items/delete/:id', async (req, res) => {
     }
 });
 
+// 물품 상세 보기
+app.get('/items/detail/:id', async (req, res) => {
+    try {
+        const item = await Item.findById(req.params.id);
+        if (!item) return res.send(`<script>alert("물품을 찾을 수 없습니다."); window.history.back();</script>`);
+        res.render('item_detail', { user: req.session.user, item: item });
+    } catch (err) { res.send("오류가 발생했습니다."); }
+});
+
+// 구매 요청 (구매자가 클릭)
+app.post('/items/request/:id', async (req, res) => {
+    if (!req.session.user) return res.send(`<script>alert("로그인이 필요합니다."); window.location.href="/login";</script>`);
+    try {
+        const item = await Item.findById(req.params.id);
+        if (item.author === req.session.user.username) return res.send(`<script>alert("자신의 물품은 구매할 수 없습니다."); window.history.back();</script>`);
+        if (item.status !== 'selling') return res.send(`<script>alert("이미 예약되었거나 판매 완료된 물품입니다."); window.history.back();</script>`);
+
+        item.status = 'requested';
+        item.buyer = req.session.user.username;
+        await item.save();
+
+        res.send(`<script>alert("구매 요청이 완료되었습니다!"); window.location.href="/items/detail/${item._id}";</script>`);
+    } catch (err) { res.send("오류가 발생했습니다."); }
+});
+
+// 구매 수락 (판매자가 클릭)
+app.post('/items/accept/:id', async (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
+    try {
+        const item = await Item.findById(req.params.id);
+        if (item.author !== req.session.user.username) return res.send(`<script>alert("권한이 없습니다."); window.history.back();</script>`);
+        
+        item.status = 'completed';
+        await item.save();
+        res.send(`<script>alert("거래를 수락하여 판매가 완료되었습니다!"); window.location.href="/items/manage";</script>`);
+    } catch (err) { res.send("오류가 발생했습니다."); }
+});
+
+// 구매 거절 (판매자가 클릭)
+app.post('/items/reject/:id', async (req, res) => {
+    if (!req.session.user) return res.redirect('/login');
+    try {
+        const item = await Item.findById(req.params.id);
+        if (item.author !== req.session.user.username) return res.send(`<script>alert("권한이 없습니다."); window.history.back();</script>`);
+
+        item.status = 'selling';
+        item.buyer = null;
+        await item.save();
+        res.send(`<script>alert("구매 요청을 거절했습니다."); window.location.href="/items/manage";</script>`);
+    } catch (err) { res.send("오류가 발생했습니다."); }
+});
+
 app.get('/info', (req, res) => res.render('info', { user: req.session.user }));
 
 // 게시판 목록 보기

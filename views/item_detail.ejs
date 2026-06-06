@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= item.title %> - 중고마켓 동네생활</title>
+    <link href="/krds/css/token/krds_tokens.css" rel="stylesheet" />
+    <link href="/krds/css/common/common.css" rel="stylesheet" />
+    <link href="/krds/css/component/component.css" rel="stylesheet" />
+    <script defer src="/krds/js/component/ui-script.js"></script>
+    <style>
+        body { background-color: #ffffff; }
+        #krds-footer { background-color: #f4f6f9; margin-top: 80px; padding: 30px 0; border-top: 1px solid #e9ecef; }
+        .krds-main-menu .gnb-menu > li > .gnb-main-trigger::after { display: none !important; }
+        .btn-logout-fix::before, .btn-logout-fix::after { display: none !important; }
+        .btn-logout-fix { display: inline-flex !important; flex-direction: row !important; align-items: center !important; gap: 4px !important; width: auto !important; white-space: nowrap !important; }
+        .btn-logout-fix svg { display: block !important; margin: 0 !important; }
+        .header-branding { display: flex; align-items: center; width: 100%; }
+        .header-branding .logo, .header-branding .logo a { background: none !important; background-image: none !important; margin: 0; display: flex; align-items: center; }
+        .subpage-container { max-width: 900px; margin: 60px auto; padding: 0 20px; min-height: 50vh; }
+        
+        .detail-wrap { background: #fff; border: 1px solid #ced4da; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+        .detail-img-box { width: 100%; background: #f8f9fa; border-bottom: 1px solid #ced4da; text-align: center; }
+        .detail-img-box img { max-width: 100%; max-height: 500px; object-fit: contain; }
+        
+        .detail-info { padding: 40px; }
+        .author-box { display: flex; align-items: center; border-bottom: 1px solid #e9ecef; padding-bottom: 20px; margin-bottom: 20px; }
+        .author-box .profile-icon { width: 50px; height: 50px; background: #e9ecef; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin-right: 15px; }
+        .author-box .name { font-size: 1.8rem; font-weight: bold; color: #111; }
+        
+        .item-title { font-size: 2.8rem; font-weight: bold; color: #111; margin-bottom: 10px; }
+        .item-price { font-size: 2.4rem; font-weight: 800; color: #111; margin-bottom: 20px; }
+        .item-content { font-size: 1.6rem; line-height: 1.8; color: #333; white-space: pre-wrap; margin-bottom: 40px; min-height: 100px; }
+
+        .action-box { border-top: 1px solid #e9ecef; padding-top: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-action { padding: 14px 40px; font-size: 1.6rem; font-weight: bold; border-radius: 6px; border: none; cursor: pointer; text-decoration: none; display: inline-block; transition: 0.2s; }
+        .btn-blue { background: #246beb; color: #fff; }
+        .btn-blue:hover { background: #1d56bc; }
+        .btn-gray { background: #f1f3f5; color: #495057; border: 1px solid #ced4da; cursor: default; font-size: 1.5rem; padding: 10px 20px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+<div id="wrap" class="g-wrap">
+    <header id="krds-header">
+        <div class="header-in">
+            <div class="header-container">
+                <div class="inner">
+                    <div class="header-branding">
+                        <h1 class="logo"><a href="/" style="display: block;"><img src="/sitelogo.png" alt="사이트 로고" style="height: 45px; width: auto;"></a></h1>
+                        <div class="header-actions" style="margin-left: auto;">
+                            <% if (user) { %>
+                                <span class="btn-navi my" style="background:none; cursor:default;"><strong><%= user.username %></strong>님</span>
+                                <a href="/logout" class="btn-navi btn-logout-fix" style="text-decoration: none; color: #333;">로그아웃</a>
+                            <% } else { %>
+                                <a href="/login" class="btn-navi login">로그인</a>
+                                <a href="/signup" class="btn-navi join">회원가입</a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <nav class="krds-main-menu">
+                <div class="inner">
+                    <ul class="gnb-menu" aria-label="메인 메뉴">
+                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/info'">서비스 안내</button></li>
+                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/board'">게시판</button></li>
+                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/friends'">친구 관리</button></li>
+                        <li><button type="button" class="gnb-main-trigger" onclick="location.href='/items'">판매 물품 정보</button></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div id="container" class="subpage-container">
+        <div class="detail-wrap">
+            <div class="detail-img-box">
+                <% if (item.image) { %>
+                    <img src="<%= item.image %>" alt="물품 이미지">
+                <% } else { %>
+                    <div style="padding: 100px; color: #adb5bd; font-size: 1.6rem;">이미지가 없습니다.</div>
+                <% } %>
+            </div>
+
+            <div class="detail-info">
+                <div class="author-box">
+                    <div class="profile-icon">👤</div>
+                    <div class="name"><%= item.author %></div>
+                </div>
+                
+                <h2 class="item-title"><%= item.title %></h2>
+                <div class="item-price"><%= item.price.toLocaleString() %>원</div>
+                <div class="item-content"><%= item.content %></div>
+
+                <div class="action-box">
+                    <a href="/items" style="font-size: 1.6rem; color: #495057; text-decoration: none; font-weight: bold;">← 목록으로</a>
+                    
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <% if (user && user.username === item.author) { %>
+                            <span style="font-size: 1.5rem; color: #e03131; font-weight: bold;">※ 내 물품입니다. 구매자 관리는 [내 물품 관리]를 이용하세요.</span>
+                        
+                        <% } else if (user) { %>
+                            <% if (item.status === 'selling') { %>
+                                <form action="/items/request/<%= item._id %>" method="POST" style="margin:0;">
+                                    <button type="submit" class="btn-action btn-blue">구매 요청하기</button>
+                                </form>
+                            <% } else if (item.status === 'requested' && item.buyer === user.username) { %>
+                                <span class="btn-gray">내 구매 요청 대기 중</span>
+                            <% } else if (item.status === 'requested') { %>
+                                <span class="btn-gray">다른 분이 예약 중입니다</span>
+                            <% } else if (item.status === 'completed') { %>
+                                <span class="btn-gray">판매 완료된 물품입니다</span>
+                            <% } %>
+                        <% } else { %>
+                            <span class="btn-gray">로그인 후 구매 가능</span>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer id="krds-footer">
+        <div class="inner">
+            <div class="f-btm">
+                <div class="f-btm-text"><p class="f-copy">© 2026 Korea National University of Transportation. All rights reserved.</p></div>
+            </div>
+        </div>
+    </footer>
+</div>
+</body>
+</html>
