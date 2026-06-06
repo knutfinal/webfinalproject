@@ -61,9 +61,26 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB 연결완료!!!'))
   .catch((err) => console.log('MongoDB 연결 오류: ', err));
 
-app.get('/', (req, res) => {
-    // views 폴더의 index.ejs를 화면에 띄우고, 로그인한 유저 정보를 함께 넘겨줌
-    res.render('index', { user: req.session.user });
+app.get('/', async (req, res) => {
+    if (req.session.user) {
+        // 로그인한 상태면 이웃의 최신 물품 정보를 검색해서 메인 화면(index)으로 전달
+        try {
+            const myFriends = await Friend.find({ username: req.session.user.username });
+            const friendNames = myFriends.map(f => f.friendName); 
+
+            const recentItems = await Item.find({ author: { $in: friendNames } })
+                                          .sort({ createdAt: -1 })
+                                          .limit(3);
+
+            res.render('index', { user: req.session.user, recentItems: recentItems });
+        } catch (err) {
+            console.log(err);
+            res.render('index', { user: req.session.user, recentItems: [] });
+        }
+    } else {
+        // 로그인하지 않은 상태면 기본 메인 화면(index) 띄우기
+        res.render('index', { user: null });
+    }
 });
 
 // 회원가입 화면(signup.ejs)을 보여주는 라우터
@@ -116,8 +133,8 @@ app.post('/login', async (req, res) => {
             username: user.username
         };
 
-        // 로그인 완료시 마이페이지 이동
-        res.redirect('/mypage');
+        // 로그인 완료시 메인 화면(index)으로 이동
+        res.redirect('/');
 
     } catch (error) {
         console.log(error);
